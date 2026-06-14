@@ -58,7 +58,7 @@ if "Date" in df.columns:
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
 
     # ---------------- CATEGORY COLUMN ----------------
-    df["Category"] = ""
+df["Category"] = ""
 
 # ---------------- APPLY RULES ----------------
 for _, rule in rules_df.iterrows():
