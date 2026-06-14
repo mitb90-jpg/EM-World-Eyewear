@@ -26,53 +26,50 @@ with col2:
         unsafe_allow_html=True
     )
 
+# ---------------- CLIENT SELECTION ----------------
 client = st.sidebar.selectbox(
     "Select Company",
     ["Scotia_Bank", "Triangle_Master_Card", "Visa_card_6023", "Visa_card_7866"]
 )
 
-# ---------------- LOAD RULES FROM EXCEL ----------------
-rules_file = "rules.xlsx"
-
-rules_df = pd.read_excel(
-    rules_file,
-    sheet_name=client
+# ---------------- FILE UPLOAD ----------------
+uploaded_file = st.sidebar.file_uploader(
+    "Upload Excel File",
+    type=["xlsx"]
 )
 
+# ---------------- RUN ONLY IF FILE UPLOADED ----------------
 if uploaded_file is not None:
 
+    # ---------------- READ FILE ----------------
     df = pd.read_excel(uploaded_file)
 
-# ---------------- CLEAN DATA ----------------
-df.columns = df.columns.astype(str).str.strip()
+    # ---------------- CLEAN DATA ----------------
+    df.columns = df.columns.astype(str).str.strip()
+    df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
+    df = df.dropna(axis=1, how="all")
+    df = df.dropna(how="all")
 
-df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
-df = df.dropna(axis=1, how="all")
-df = df.dropna(how="all")
-
-# ---------------- ADD THIS LINE HERE ----------------
-rules_df = pd.read_excel("rules.xlsx", sheet_name=client)    
+    # ---------------- LOAD RULES ----------------
+    rules_df = pd.read_excel("rules.xlsx", sheet_name=client)
 
     # ---------------- DATE FIX ----------------
-if "Date" in df.columns:
+    if "Date" in df.columns:
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.date
 
     # ---------------- CATEGORY COLUMN ----------------
-df["Category"] = ""
+    df["Category"] = ""
 
-# ---------------- APPLY RULES ----------------
-for _, rule in rules_df.iterrows():
+    # ---------------- APPLY RULES ----------------
+    for _, rule in rules_df.iterrows():
 
-    keyword = str(rule["Keyword"])
-    category = str(rule["Category"])
+        keyword = str(rule["Keyword"])
+        category = str(rule["Category"])
 
-    mask = df["Description"].astype(str).str.contains(
-        keyword,
-        case=False,
-        na=False
-    )
-
-    df.loc[mask, "Category"] = category
+        df.loc[
+            df["Description"].astype(str).str.contains(keyword, case=False, na=False),
+            "Category"
+        ] = category
 
     # ---------------- ADD Sr. No ----------------
     df = df.reset_index(drop=True)
@@ -87,6 +84,33 @@ for _, rule in rules_df.iterrows():
     investment_amount = df.loc[df["Category"] == "Investment income", "Debit"].fillna(0).sum()
     bank_charge_amount = df.loc[df["Category"] == "Interest and Bank charges", "Debit"].fillna(0).sum()
     loan_amount = df.loc[df["Category"] == "Loan to world eyewear", "Debit"].fillna(0).sum()
+
+    # ---------------- SUMMARY DATA ----------------
+    amounts = {
+        "Revenue": revenue_amount,
+        "Investment": investment_amount,
+        "Loan": loan_amount,
+        "Bank Charges": bank_charge_amount
+    }
+
+    # ---------------- SUMMARY DASHBOARD ----------------
+    st.subheader("📊 Summary Dashboard")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Revenue", revenue_amount)
+    col2.metric("Investment", investment_amount)
+    col3.metric("Loans", loan_amount)
+    col4.metric("Bank Charges", bank_charge_amount)
+
+    # ---------------- PIE CHART ----------------
+    amounts = {k: v for k, v in amounts.items() if v > 0}
+
+    if amounts:
+        fig, ax = plt.subplots()
+        ax.pie(amounts.values(), labels=amounts.keys(), autopct="%1.1f%%")
+        ax.set_title("Financial Distribution")
+        st.pyplot(fig)
 
     # ---------------- SUMMARY TABLE ----------------
     st.subheader("📋 Category Summary")
@@ -109,7 +133,7 @@ for _, rule in rules_df.iterrows():
     st.download_button(
         "⬇️ Download Excel File",
         data=output,
-        file_name="Auto_categorised_file_2331061_Ontario_Inc.xlsx",
+        file_name="Auto_categorised_file.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
