@@ -29,7 +29,12 @@ with col2:
 # ---------------- CLIENT SELECTION ----------------
 client = st.sidebar.selectbox(
     "Select Statement",
-    ["Scotia Bank", "Triangle Master Card", "Visa card-6023", "Visa card-7866"]
+    [
+        "Scotia_Bank",
+        "Triangle_Master_Card",
+        "Visa_card_6023",
+        "Visa_card_7866"
+    ]
 )
 
 # ---------------- FILE UPLOAD ----------------
