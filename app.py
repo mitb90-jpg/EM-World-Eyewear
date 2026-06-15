@@ -9,25 +9,33 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------------- CSS (BUTTON STYLING) ----------------
+# ---------------- NUMBER FORMAT FUNCTION ----------------
+def format_amount(x):
+    try:
+        if pd.isna(x):
+            return ""
+        if isinstance(x, (int, float)):
+            return f"{x:,.2f}"
+        return x
+    except:
+        return x
+
+# ---------------- CSS ----------------
 st.markdown("""
 <style>
 div.stDownloadButton > button {
     width: 100%;
     background-color: #1f4e79;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    padding: 14px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 10px;
     border: none;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
-    transition: 0.3s;
 }
 
 div.stDownloadButton > button:hover {
     background-color: #163a5c;
-    transform: scale(1.02);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -39,14 +47,8 @@ with col1:
     st.image("Logo.jpeg", width=100)
 
 with col2:
-    st.markdown(
-        "<h1 style='color:#1f4e79;'>Prime Accounting and Tax</h1>",
-        unsafe_allow_html=True
-    )
-    st.markdown(
-        "<p style='font-size:22px; color:gray;'>World Eyewear</p>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<h1 style='color:#1f4e79;'>Prime Accounting and Tax</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size:20px; color:gray;'>World Eyewear</p>", unsafe_allow_html=True)
 
 # ---------------- SIDEBAR ----------------
 company = st.sidebar.selectbox(
@@ -61,7 +63,7 @@ if uploaded_file is not None:
 
     df = pd.read_excel(uploaded_file)
 
-    # ---------------- CLEAN ----------------
+    # ---------------- CLEAN DATA ----------------
     df.columns = df.columns.astype(str).str.strip()
     df = df.dropna(how="all")
 
@@ -86,9 +88,50 @@ if uploaded_file is not None:
         "Category"
     ] = "Insurance"
 
-    # ---------------- TABLE ----------------
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("LOANS", case=False),
+        "Category"
+    ] = "Car Loan"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("PC Bill Payment", case=False),
+        "Category"
+    ] = "Purchases"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("GOODLIFE FITNESS", case=False),
+        "Category"
+    ] = "Personal Expenses"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("HIGHWAY", case=False),
+        "Category"
+    ] = "Parking and Toll"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("SERVICE CHARGE|FEE", case=False),
+        "Category"
+    ] = "Interest and Bank charges"
+
+    # ---------------- Sr No ----------------
+    df = df.reset_index(drop=True)
+    df.insert(0, "Sr. No", range(1, len(df) + 1))
+
+    # ---------------- FORMAT DISPLAY TABLE ----------------
+    display_df = df.copy()
+
+    for col in ["Credit", "Debit"]:
+        if col in display_df.columns:
+            display_df[col] = display_df[col].apply(format_amount)
+
+    # ---------------- MAIN TABLE ----------------
     st.subheader("📊 Categorized Transactions")
-    st.dataframe(df, use_container_width=True)
+    st.dataframe(display_df, use_container_width=True)
 
     # ================= PROFIT & LOSS =================
     st.subheader("📊 Profit & Loss Statement")
@@ -101,21 +144,28 @@ if uploaded_file is not None:
     total_expenses = expense_summary["Debit"].sum()
     net_profit = total_revenue - total_expenses
 
-    pl_df = pd.DataFrame([
+    pl_rows = [
         ["Revenue", total_revenue],
-        ["Less: Expenses", ""],
-        *expense_summary.values.tolist(),
+        ["Less: Expenses", ""]
+    ]
+
+    for _, r in expense_summary.iterrows():
+        pl_rows.append([r["Category"], r["Debit"]])
+
+    pl_rows += [
         ["Total Expenses", total_expenses],
         ["Net Profit", net_profit]
-    ], columns=["Description", "Amount"])
+    ]
+
+    pl_df = pd.DataFrame(pl_rows, columns=["Description", "Amount"])
+    pl_df["Amount"] = pl_df["Amount"].apply(format_amount)
 
     st.dataframe(pl_df, use_container_width=True)
 
-    # ---------------- EXPORT P&L FILE ----------------
+    # ---------------- P&L DOWNLOAD ----------------
     pl_output = io.BytesIO()
     with pd.ExcelWriter(pl_output, engine="openpyxl") as writer:
         pl_df.to_excel(writer, index=False, sheet_name="Profit & Loss")
-
     pl_output.seek(0)
 
     st.download_button(
@@ -125,18 +175,21 @@ if uploaded_file is not None:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-    # ---------------- CATEGORY SUMMARY ----------------
+    # ================= CATEGORY SUMMARY =================
     summary = df.groupby("Category")[["Credit", "Debit"]].sum().fillna(0)
     summary["Net"] = summary["Credit"] - summary["Debit"]
+    summary = summary.reset_index()
+
+    for col in ["Credit", "Debit", "Net"]:
+        summary[col] = summary[col].apply(format_amount)
 
     st.subheader("📋 Category Summary")
-    st.dataframe(summary.reset_index()[["Category", "Net"]])
+    st.dataframe(summary, use_container_width=True)
 
-    # ---------------- EXPORT TRANSACTIONS ----------------
+    # ---------------- MAIN DOWNLOAD ----------------
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Transactions")
-
     output.seek(0)
 
     st.download_button(
