@@ -202,26 +202,26 @@ else:
 
     st.markdown("""
     <div style="
-        background-color:#f8f9fa;
-        padding:40px;
-        border-radius:15px;
+        background: linear-gradient(135deg,#1f4e79,#2e75b6);
+        padding:50px;
+        border-radius:20px;
         text-align:center;
-        border:2px dashed #1f4e79;
         margin-top:30px;
+        color:white;
     ">
-        <h2 style="color:#1f4e79;">
-            📊 Smart Transaction Categorizer
-        </h2>
+        <h1>📊 Smart Transaction Categorizer</h1>
 
-        <p style="font-size:18px; color:#555;">
-            Upload an Excel file from the left sidebar to begin analysis.
+        <h3>Prime Accounting and Tax</h3>
+
+        <p style="font-size:18px;">
+            Upload an Excel file from the sidebar to generate:
         </p>
 
-        <p style="font-size:15px; color:#888;">
-            ✔ Automatic Categorization<br>
-            ✔ Category Summary<br>
-            ✔ Profit & Loss Statement<br>
-            ✔ Excel Export
+        <p style="font-size:17px;">
+            📋 Category Summary<br>
+            📈 Profit & Loss Statement<br>
+            📤 Export Categorized Data<br>
+            ⚡ Automated Transaction Classification
         </p>
     </div>
     """, unsafe_allow_html=True)
