@@ -140,7 +140,7 @@ if uploaded_file is not None:
     # ---------------- AMOUNTS ----------------
     revenue_amount = df.loc[df["Category"] == "Revenue", "Credit"].fillna(0).sum()
     other_income_amount = df.loc[df["Category"] == "Other Income", "Credit"].fillna(0).sum()
-    associates_&_opticians_amount = df.loc[df["Category"] == "Associates & Opticians", "Debit"].fillna(0).sum()
+    associates_opticians_amount = df.loc[df["Category"] == "Associates & Opticians", "Debit"].fillna(0).sum()
     car_loan_amount = df.loc[df["Category"] == "Car Loan", "Debit"].fillna(0).sum()    
     cdn_tire_options_mc_amount = df.loc[df["Category"] == "Cdn Tire Options MC", "Debit"].fillna(0).sum()    
     Drawings_amount = df.loc[df["Category"] == "Drawings", "Debit"].fillna(0).sum()    
