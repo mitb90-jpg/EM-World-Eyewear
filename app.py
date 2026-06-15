@@ -71,25 +71,43 @@ if uploaded_file is not None:
     # ---------------- DEBIT RULES ----------------
     df.loc[
         df["Debit"].notna() &
-        df["Description"].astype(str).str.contains("CHQ", na=False),
+        df["Description"].astype(str).str.contains("LOANS", na=False),
         "Category"
-    ] = "Loan to world eyewear"
+    ] = "Car Loan"
 
     df.loc[
         df["Debit"].notna() &
-        df["Description"].astype(str).str.contains("TRANSFER TO", case=False, na=False),
+        df["Description"].astype(str).str.contains("INSURANCE", case=False, na=False),
         "Category"
-    ] = "Loan to world eyewear"
+    ] = "Insurance"
 
     df.loc[
         df["Debit"].notna() &
-        df["Description"].astype(str).str.contains("TRANSFER OTHER", case=False, na=False),
+        (df["Description"].astype(str).str.strip().str.lower() == "Misc payment"),
         "Category"
-    ] = "Investment income"
+    ] = "Misc Expenses"
 
     df.loc[
         df["Debit"].notna() &
-        df["Description"].astype(str).str.contains("SERVICE CHARGE", case=False, na=False),
+        df["Description"].astype(str).str.contains("PC Bill Payment", case=False, na=False),
+        "Category"
+    ] = "Purchases"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("GOODLIFE FITNESS", case=False, na=False),
+        "Category"
+    ] = "Personal Expenses"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("HIGHWAY", case=False, na=False),
+        "Category"
+    ] = "Parking and Toll"
+
+    df.loc[
+        df["Debit"].notna() &
+        df["Description"].astype(str).str.contains("SERVICE CHARGE|Fee", case=False, na=False),
         "Category"
     ] = "Interest and Bank charges"
 
