@@ -198,7 +198,7 @@ if uploaded_file is not None:
     output.seek(0)
 
     st.download_button(
-        "⬇️ Export Categorized Data",
+        "⬇️ Export Auto-Categorized Data",
         data=output,
         file_name="Categorized_Data.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
