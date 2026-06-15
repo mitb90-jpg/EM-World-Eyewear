@@ -200,37 +200,30 @@ if uploaded_file is not None:
 
 st.markdown("""
 <div style="
-    background-color:#f8f9fa;
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-    border:1px solid #e0e0e0;
+    background: linear-gradient(135deg,#0f3557,#1f4e79);
+    padding: 45px 30px;
+    border-radius: 18px;
+    text-align: center;
+    color: white;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.25);
+    margin-bottom: 25px;
 ">
 
-<h1 style="color:#1f4e79;">
-📊 Prime Automated Categorization & Reporting Portal
-</h1>
+    <div style="font-size:38px; font-weight:700;">
+        📊 Financial Categorization & Reporting System
+    </div>
 
-<h3 style="color:gray;">
-Prime Accounting and Tax
-</h3>
+    <div style="font-size:22px; margin-top:8px; opacity:0.95;">
+        Prime Accounting and Tax
+    </div>
 
-<p style="font-size:18px;">
-Upload a bank statement or credit card statement to automatically:
-</p>
+    <div style="font-size:16px; margin-top:12px; opacity:0.85;">
+        Automated Transaction Classification • Category Summary • Profit & Loss Reporting
+    </div>
 
-<p style="font-size:17px;">
-✅ Categorize Transactions<br>
-✅ Generate Category Summary<br>
-✅ Create Profit & Loss Statement<br>
-✅ Export Professional Excel Reports
-</p>
-
-<br>
-
-<p style="color:#1f4e79;font-size:18px;font-weight:bold;">
-⬅ Upload your Excel file from the sidebar to begin
-</p>
+    <div style="margin-top:18px; font-size:14px; opacity:0.8;">
+        Powered by <b>Prime™</b>
+    </div>
 
 </div>
 """, unsafe_allow_html=True)
