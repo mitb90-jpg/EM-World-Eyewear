@@ -71,18 +71,9 @@ if uploaded_file is not None:
     # ---------------- RULES ----------------
     df.loc[
         df["Credit"].notna() &
-        df["Description"].astype(str).str.contains(
-            "MISC PAYMENT|TRANSFER FROM|DEPOSIT|DEP. FROM ANOTHER PARTY",
-            case=False
-        ),
+        df["Description"].astype(str).str.contains("MISC PAYMENT|TRANSFER FROM|DEPOSIT|DEP. FROM ANOTHER PARTY", case=False),
         "Category"
     ] = "Revenue"
-
-    df.loc[
-        df["Credit"].notna() &
-        df["Description"].astype(str).str.contains("Insurance|HEALTH/DENTAL CLAIM", case=False),
-        "Category"
-    ] = "Other Income"
 
     df.loc[
         df["Debit"].notna() &
@@ -240,29 +231,29 @@ else:
         text-align:center;
         border:1px solid #e0e0e0;
     ">
-        <h1 style="color:#1f4e79;">
-        📊 Prime Automated Categorization & Reporting System
-        </h1>
+    <h1 style="color:#1f4e79;">
+    📊 Prime Automated Categorization & Reporting System
+    </h1>
 
-        <h3 style="color:gray;">
-        Prime Accounting and Tax
-        </h3>
+    <h3 style="color:gray;">
+    Prime Accounting and Tax
+    </h3>
 
-        <p style="font-size:18px;">
-        Upload a bank statement or credit card statement to automatically:
-        </p>
+    <p style="font-size:18px;">
+    Upload a bank statement or credit card statement to automatically:
+    </p>
 
-        <p style="font-size:17px;">
-        ✅ Categorize Transactions<br>
-        ✅ Generate Category Summary<br>
-        ✅ Create Profit & Loss Statement<br>
-        ✅ Export Professional Excel Reports
-        </p>
+    <p style="font-size:17px;">
+    ✅ Categorize Transactions<br>
+    ✅ Generate Category Summary<br>
+    ✅ Create Profit & Loss Statement<br>
+    ✅ Export Professional Excel Reports
+    </p>
 
-        <br>
+    <br>
 
-        <p style="color:#1f4e79;font-size:18px;font-weight:bold;">
-        ⬅ Upload your Excel file from the sidebar to begin
-        </p>
+    <p style="color:#1f4e79;font-size:18px;font-weight:bold;">
+    ⬅ Upload your Excel file from the sidebar to begin
+    </p>
     </div>
     """, unsafe_allow_html=True)
