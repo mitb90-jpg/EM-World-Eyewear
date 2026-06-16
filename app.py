@@ -135,10 +135,11 @@ with pdfplumber.open(uploaded_file) as pdf:
         table = page.extract_table()
 
         if table is not None:
-
             for row in table:
 
-                row_text = " ".join(str(x) for x in row if x)
+                row_text = " ".join(
+                    str(x) for x in row if x
+                )
 
                 # remove repeated headers
                 if "Date" in row_text and "Description" in row_text:
