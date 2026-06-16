@@ -144,6 +144,9 @@ with pdfplumber.open(uploaded_file) as pdf:
                     continue
 
                 all_rows.append(row)
+                
+
+df = pd.DataFrame(all_rows)
 
     # ---------------- CLEAN ----------------
     df.columns = (
