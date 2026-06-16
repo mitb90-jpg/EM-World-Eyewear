@@ -85,30 +85,30 @@ if uploaded_file is not None:
 
     # ---------------- CLEAN ----------------
     df.columns = (
-    df.columns
-    .astype(str)
-    .str.strip()
-    .str.replace(r"\s*\(\$\)", "", regex=True)
-)
+        df.columns
+        .astype(str)
+        .str.strip()
+        .str.replace(r"\s*\(\$\)", "", regex=True)
+    )
 
-df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
-df = df.dropna(how="all")
+    df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
+    df = df.dropna(how="all")
 
 
     # ---------------- FIX PDF HEADERS ----------------
 
     df.columns = (
-    df.columns
-    .astype(str)
-    .str.strip()
-)
+        df.columns
+        .astype(str)
+        .str.strip()
+    )
 
-for col in df.columns:
-    if "Deposits" in col:
-        df.rename(columns={col: "Deposits/Credits"}, inplace=True)
+    for col in df.columns:
+        if "Deposits" in col:
+            df.rename(columns={col: "Deposits/Credits"}, inplace=True)
 
-    if "Withdrawals" in col:
-        df.rename(columns={col: "Withdrawals/Debits"}, inplace=True)
+        if "Withdrawals" in col:
+            df.rename(columns={col: "Withdrawals/Debits"}, inplace=True)
 
 
     # ---------------- NORMALIZE COLUMNS ----------------
