@@ -97,7 +97,7 @@ if uploaded_file is not None:
         st.write("Last 20 Rows")
         st.dataframe(df.tail(20))
 
-            for row in table:
+
 
     row_text = " ".join(
         str(x) for x in row if x
