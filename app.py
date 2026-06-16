@@ -251,20 +251,36 @@ else:
 
     st.markdown("""
     <div style="
-        background: linear-gradient(135deg, #eef5ff, #ffffff);
+        background: linear-gradient(135deg,#eaf3ff,#ffffff);
         padding:60px 40px;
-        border-radius:25px;
-        border:1px solid #d6e4f0;
+        border-radius:30px;
+        border:1px solid #cbdced;
         text-align:center;
-        box-shadow:0 8px 25px rgba(0,0,0,0.08);
+        box-shadow:0 12px 35px rgba(0,0,0,0.10);
     ">
+
+    <div style="
+        display:inline-block;
+        background:#dff3e6;
+        color:#176b35;
+        padding:8px 18px;
+        border-radius:20px;
+        font-size:15px;
+        font-weight:bold;
+        margin-bottom:20px;
+    ">
+    🟢 System Ready
+    </div>
+
 
     <h1 style="
         color:#1f4e79;
-        font-size:48px;
+        font-size:50px;
         margin-bottom:10px;
     ">
-    📊 Prime Automated Categorization System
+    📊 Prime Automated
+    <br>
+    Categorization System
     </h1>
 
 
@@ -281,7 +297,7 @@ else:
         color:#333;
         margin-top:25px;
     ">
-    Convert bank statements into organized accounting reports automatically
+    Smart transaction processing for modern accounting workflows
     </p>
 
 
@@ -300,17 +316,26 @@ else:
 
         st.markdown("""
         <div style="
-            padding:25px;
-            border-radius:18px;
-            background:#f8fbff;
+            padding:30px;
+            height:180px;
+            border-radius:22px;
+            background:white;
             border:1px solid #d6e4f0;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
             text-align:center;
         ">
 
-        <h2>📂</h2>
-        <h3>Upload</h3>
+        <div style="font-size:45px;">
+        📂
+        </div>
+
+        <h2 style="color:#1f4e79;">
+        Upload
+        </h2>
+
         <p>
-        Excel or PDF bank statements
+        Bank statements<br>
+        Excel or PDF
         </p>
 
         </div>
@@ -322,17 +347,26 @@ else:
 
         st.markdown("""
         <div style="
-            padding:25px;
-            border-radius:18px;
-            background:#f8fbff;
+            padding:30px;
+            height:180px;
+            border-radius:22px;
+            background:white;
             border:1px solid #d6e4f0;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
             text-align:center;
         ">
 
-        <h2>🤖</h2>
-        <h3>Analyze</h3>
+        <div style="font-size:45px;">
+        🤖
+        </div>
+
+        <h2 style="color:#1f4e79;">
+        Automate
+        </h2>
+
         <p>
-        Automatic transaction categorization
+        Smart categorization<br>
+        Transaction analysis
         </p>
 
         </div>
@@ -344,17 +378,26 @@ else:
 
         st.markdown("""
         <div style="
-            padding:25px;
-            border-radius:18px;
-            background:#f8fbff;
+            padding:30px;
+            height:180px;
+            border-radius:22px;
+            background:white;
             border:1px solid #d6e4f0;
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
             text-align:center;
         ">
 
-        <h2>📈</h2>
-        <h3>Reports</h3>
+        <div style="font-size:45px;">
+        📈
+        </div>
+
+        <h2 style="color:#1f4e79;">
+        Reports
+        </h2>
+
         <p>
-        Category summary and Profit & Loss
+        Summary<br>
+        Profit & Loss
         </p>
 
         </div>
@@ -362,23 +405,25 @@ else:
 
 
 
-    st.markdown("""
-    <br>
+    st.write("")
 
+
+    st.markdown("""
     <div style="
-        background:#1f4e79;
+        background:linear-gradient(90deg,#1f4e79,#2e75b6);
         color:white;
-        padding:20px;
-        border-radius:15px;
+        padding:25px;
+        border-radius:20px;
         text-align:center;
+        box-shadow:0 8px 20px rgba(0,0,0,0.15);
     ">
 
-    <h3>
-    👈 Upload your file from the sidebar to start
-    </h3>
+    <h2>
+    👈 Ready when you are
+    </h2>
 
-    <p>
-    Supported formats: Excel (.xlsx) | PDF
+    <p style="font-size:18px;">
+    Upload your statement from the sidebar and let Prime handle the rest.
     </p>
 
     </div>
