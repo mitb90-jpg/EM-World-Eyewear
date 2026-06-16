@@ -416,6 +416,7 @@ else:
         border-radius:20px;
         text-align:center;
         box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        margin-top:40px;
     ">
 
     <h2>
