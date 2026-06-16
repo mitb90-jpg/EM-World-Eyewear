@@ -55,12 +55,32 @@ company = st.sidebar.selectbox(
     ["Scotia Bank", "Triangle Master Card", "Visa - 6023", "Visa - 7866"]
 )
 
-uploaded_file = st.sidebar.file_uploader("Upload Excel File", type=["xlsx"])
+uploaded_file = st.sidebar.file_uploader(
+    "Upload File (Excel or PDF)",
+    type=["xlsx", "pdf"]
+)
 
 # ================= MAIN =================
 if uploaded_file is not None:
 
-    df = pd.read_excel(uploaded_file)
+    file_type = uploaded_file.name.split(".")[-1].lower()
+
+    if file_type == "xlsx":
+        df = pd.read_excel(uploaded_file)
+
+    elif file_type == "pdf":
+        import pdfplumber
+
+        all_rows = []
+
+        with pdfplumber.open(uploaded_file) as pdf:
+            for page in pdf.pages:
+                table = page.extract_table()
+
+                if table:
+                    all_rows.extend(table)
+
+        df = pd.DataFrame(all_rows[1:], columns=all_rows[0])
 
     # ---------------- CLEAN (FIXED UNNAMED COLUMN HERE) ----------------
     df.columns = df.columns.astype(str).str.strip()
@@ -128,7 +148,7 @@ if uploaded_file is not None:
 
     df.loc[
         df["Debit"].notna() &
-        df["Description"].astype(str).str.contains("TSCC", case=False),
+        df["Description"].astype(str).str.contains("TSCC|POINT OF SALE PURCHASE", case=False),
         "Category"
     ] = "Vehicle Expense"
 
