@@ -193,29 +193,24 @@ if uploaded_file is not None:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-    # ---------------- CATEGORY SUMMARY ----------------
-    summary = df.groupby("Category")[["Credit", "Debit"]].sum().fillna(0)
-    summary["Net"] = summary["Credit"] - summary["Debit"]
-    summary = summary.reset_index()
+# ---------------- SUMMARY DOWNLOAD ----------------
+summary_output = io.BytesIO()
 
-    for col in ["Credit", "Debit", "Net"]:
-        summary[col] = summary[col].apply(format_amount)
-
-    st.subheader("📋 Category Summary")
-    st.dataframe(summary, use_container_width=True, hide_index=True)
-
-    # ---------------- MAIN DOWNLOAD ----------------
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        df.to_excel(writer, index=False, sheet_name="Transactions")
-    output.seek(0)
-
-    st.download_button(
-        "⬇️ Export Summary Data",
-        data=output,
-        file_name="Auto_Summary_Categorized_Data.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
+    summary.to_excel(
+        writer,
+        index=False,
+        sheet_name="Category Summary"
     )
+
+summary_output.seek(0)
+
+st.download_button(
+    "⬇️ Export Summary Data",
+    data=summary_output,
+    file_name="Category_Summary.xlsx",
+    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
 
 st.markdown("""
 <div style="
