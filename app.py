@@ -117,6 +117,15 @@ if uploaded_file is not None:
 
     df["Category"] = ""
 
+        # ---------------- FIX PDF COLUMN NAMES ----------------
+    if "Deposits/Credits" not in df.columns:
+        if "Credit" in df.columns:
+            df["Deposits/Credits"] = df["Credit"]
+
+    if "Withdrawals/Debits" not in df.columns:
+        if "Debit" in df.columns:
+            df["Withdrawals/Debits"] = df["Debit"]
+
     # ---------------- CREDIT RULES ----------------
     df.loc[
         df["Deposits/Credits"].notna() &
