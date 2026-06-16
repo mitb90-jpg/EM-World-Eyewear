@@ -177,75 +177,92 @@ if uploaded_file is not None:
     df["Category"] = ""
 
 
-    # CREDIT RULES
+# ---------------- CATEGORY ----------------
+
+df["Category"] = ""
+
+
+# Make sure columns exist
+
+if "Deposits/Credits" not in df.columns:
+    df["Deposits/Credits"] = None
+
+if "Withdrawals/Debits" not in df.columns:
+    df["Withdrawals/Debits"] = None
+
+if "Description" not in df.columns:
+    df["Description"] = ""
+
+
+# ---------------- CREDIT RULES ----------------
+
+df.loc[
+    df["Deposits/Credits"].notna()
+    &
+    df["Description"].astype(str).str.contains(
+        "MISC PAYMENT|TRANSFER FROM|DEPOSIT|DEP. FROM ANOTHER PARTY",
+        case=False
+    ),
+    "Category"
+] = "Revenue"
+
+
+df.loc[
+    df["Deposits/Credits"].notna()
+    &
+    df["Description"].astype(str).str.contains(
+        "Insurance|HEALTH/DENTAL CLAIM",
+        case=False
+    ),
+    "Category"
+] = "Other Income"
+
+
+
+# ---------------- DEBIT RULES ----------------
+
+rules = {
+
+    "Misc Expenses":
+    "misc payment",
+
+    "Insurance":
+    "INSURANCE",
+
+    "Ask from Customer":
+    "Debit Memo",
+
+    "Car Loan":
+    "LOANS",
+
+    "Purchases":
+    "PC Bill Payment",
+
+    "Personal Expenses":
+    "GOODLIFE FITNESS",
+
+    "Parking and Toll":
+    "HIGHWAY",
+
+    "Vehicle Expense":
+    "TSCC|POINT OF SALE PURCHASE",
+
+    "Interest and Bank charges":
+    "SERVICE CHARGE|FEE"
+}
+
+
+for category, keyword in rules.items():
 
     df.loc[
-        df["Deposits/Credits"].notna()
+        df["Withdrawals/Debits"].notna()
         &
         df["Description"].astype(str).str.contains(
-            "MISC PAYMENT|TRANSFER FROM|DEPOSIT|DEP. FROM ANOTHER PARTY",
+            keyword,
             case=False
         ),
         "Category"
-    ] = "Revenue"
-
-
-    df.loc[
-        df["Deposits/Credits"].notna()
-        &
-        df["Description"].astype(str).str.contains(
-            "Insurance|HEALTH/DENTAL CLAIM",
-            case=False
-        ),
-        "Category"
-    ] = "Other Income"
-
-
-
-    # DEBIT RULES
-
-    rules = {
-
-        "Misc Expenses":
-        "misc payment",
-
-        "Insurance":
-        "INSURANCE",
-
-        "Ask from Customer":
-        "Debit Memo",
-
-        "Car Loan":
-        "LOANS",
-
-        "Purchases":
-        "PC Bill Payment",
-
-        "Personal Expenses":
-        "GOODLIFE FITNESS",
-
-        "Parking and Toll":
-        "HIGHWAY",
-
-        "Vehicle Expense":
-        "TSCC|POINT OF SALE PURCHASE",
-
-        "Interest and Bank charges":
-        "SERVICE CHARGE|FEE"
-    }
-
-
-    for category, keyword in rules.items():
-
-        df.loc[
-            df["Withdrawals/Debits"].notna()
-            &
-            df["Description"].astype(str).str.contains(
-                keyword,
-                case=False
-            ),
-            "Category"
-        ] = category
+    ] = category
 
 
 
