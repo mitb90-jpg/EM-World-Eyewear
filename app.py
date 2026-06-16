@@ -239,8 +239,10 @@ if uploaded_file is not None:
 
 if uploaded_file is not None:
 
-    # all your upload code here
-    # Excel/PDF processing
+    # YOUR OLD WORKING CODE MUST BE HERE
+    # Excel
+    # PDF
+    # categorization
     # reports
 
 
