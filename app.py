@@ -83,8 +83,13 @@ if uploaded_file is not None:
 
         df = pd.DataFrame(all_rows[1:], columns=all_rows[0])
 
-    # ---------------- CLEAN ----------------
-    df.columns = df.columns.astype(str).str.strip()
+        # ---------------- CLEAN ----------------
+    df.columns = (
+        df.columns
+        .astype(str)
+        .str.strip()
+        .str.replace(r"\s*\(\$\)", "", regex=True))
+
     df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
     df = df.dropna(how="all")
 
