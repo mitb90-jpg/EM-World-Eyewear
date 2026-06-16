@@ -254,17 +254,18 @@ if uploaded_file is not None:
     # ---------------- DISPLAY TABLE ----------------
     display_df = df.copy()
 
-    # Remove unnecessary columns only from display
+    # Remove extra columns only from display
     display_df = display_df.drop(
-        columns=["Balance"],
+        columns=[
+            "Balance",
+            "Credit",
+            "Debit"
+        ],
         errors="ignore"
     )
 
-    for col in ["Credit", "Debit"]:
-        if col in display_df.columns:
-            display_df[col] = display_df[col].apply(format_amount)
-
     st.subheader("📊 Categorized Transactions")
+
     st.dataframe(
         display_df,
         use_container_width=True,
