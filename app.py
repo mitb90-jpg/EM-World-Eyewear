@@ -251,23 +251,134 @@ else:
 
     st.markdown("""
     <div style="
-        background: linear-gradient(135deg,#f5f9ff,#ffffff);
-        padding:50px;
-        border-radius:20px;
-        border:1px solid #d9e6f5;
+        background: linear-gradient(135deg, #eef5ff, #ffffff);
+        padding:60px 40px;
+        border-radius:25px;
+        border:1px solid #d6e4f0;
         text-align:center;
+        box-shadow:0 8px 25px rgba(0,0,0,0.08);
     ">
 
-    <h1 style="color:#1f4e79;">
+    <h1 style="
+        color:#1f4e79;
+        font-size:48px;
+        margin-bottom:10px;
+    ">
     📊 Prime Automated Categorization System
     </h1>
 
-    <h3 style="color:#555;">
+
+    <h2 style="
+        color:#555;
+        font-weight:400;
+    ">
     Prime Accounting and Tax
+    </h2>
+
+
+    <p style="
+        font-size:22px;
+        color:#333;
+        margin-top:25px;
+    ">
+    Convert bank statements into organized accounting reports automatically
+    </p>
+
+
+    </div>
+    """, unsafe_allow_html=True)
+
+
+
+    st.write("")
+
+
+    col1, col2, col3 = st.columns(3)
+
+
+    with col1:
+
+        st.markdown("""
+        <div style="
+            padding:25px;
+            border-radius:18px;
+            background:#f8fbff;
+            border:1px solid #d6e4f0;
+            text-align:center;
+        ">
+
+        <h2>📂</h2>
+        <h3>Upload</h3>
+        <p>
+        Excel or PDF bank statements
+        </p>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+
+    with col2:
+
+        st.markdown("""
+        <div style="
+            padding:25px;
+            border-radius:18px;
+            background:#f8fbff;
+            border:1px solid #d6e4f0;
+            text-align:center;
+        ">
+
+        <h2>🤖</h2>
+        <h3>Analyze</h3>
+        <p>
+        Automatic transaction categorization
+        </p>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+
+    with col3:
+
+        st.markdown("""
+        <div style="
+            padding:25px;
+            border-radius:18px;
+            background:#f8fbff;
+            border:1px solid #d6e4f0;
+            text-align:center;
+        ">
+
+        <h2>📈</h2>
+        <h3>Reports</h3>
+        <p>
+        Category summary and Profit & Loss
+        </p>
+
+        </div>
+        """, unsafe_allow_html=True)
+
+
+
+    st.markdown("""
+    <br>
+
+    <div style="
+        background:#1f4e79;
+        color:white;
+        padding:20px;
+        border-radius:15px;
+        text-align:center;
+    ">
+
+    <h3>
+    👈 Upload your file from the sidebar to start
     </h3>
 
-    <p style="font-size:18px;">
-    Upload your file from the sidebar to begin
+    <p>
+    Supported formats: Excel (.xlsx) | PDF
     </p>
 
     </div>
