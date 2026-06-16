@@ -83,12 +83,13 @@ if uploaded_file is not None:
 
         df = pd.DataFrame(all_rows[1:], columns=all_rows[0])
 
-        # ---------------- CLEAN ----------------
+    # ---------------- CLEAN ----------------
     df.columns = (
         df.columns
         .astype(str)
         .str.strip()
-        .str.replace(r"\s*\(\$\)", "", regex=True))
+        .str.replace(r"\s*\(\$\)", "", regex=True)
+    )
 
     df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
     df = df.dropna(how="all")
@@ -122,7 +123,7 @@ if uploaded_file is not None:
 
     df["Category"] = ""
 
-        # ---------------- FIX PDF COLUMN NAMES ----------------
+    # ---------------- FIX PDF COLUMN NAMES ----------------
     if "Deposits/Credits" not in df.columns:
         if "Credit" in df.columns:
             df["Deposits/Credits"] = df["Credit"]
