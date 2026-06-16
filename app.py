@@ -81,7 +81,20 @@ if uploaded_file is not None:
                 if table:
                     all_rows.extend(table)
 
-        df = pd.DataFrame(all_rows[1:], columns=all_rows[0])
+        # Create dataframe without assuming first row is header
+        df = pd.DataFrame(all_rows)
+
+        # Remove empty columns
+        df = df.dropna(axis=1, how="all")
+
+        # Assign bank statement columns manually
+        df.columns = [
+            "Date",
+            "Description",
+            "Withdrawals/Debits",
+            "Deposits/Credits",
+            "Balance"
+        ]
 
     # ---------------- CLEAN ----------------
     df.columns = (
