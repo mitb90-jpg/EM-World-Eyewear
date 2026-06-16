@@ -155,7 +155,7 @@ df.columns = (
         .str.replace(r"\s*\(\$\)", "", regex=True)
     )
 
-    df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
+df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
     df = df.dropna(how="all")
 
 
