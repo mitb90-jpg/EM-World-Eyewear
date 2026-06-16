@@ -20,6 +20,7 @@ def format_amount(x):
     except:
         return x
 
+
 # ---------------- CSS ----------------
 st.markdown("""
 <style>
@@ -61,20 +62,28 @@ if uploaded_file is not None:
 
     df = pd.read_excel(uploaded_file)
 
-    # ---------------- CLEAN DATA ----------------
+    # ---------------- CLEAN (FIXED UNNAMED COLUMN HERE) ----------------
     df.columns = df.columns.astype(str).str.strip()
     df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
     df = df.dropna(how="all")
 
     df["Category"] = ""
 
-    # ---------------- RULES ----------------
+    # ---------------- CREDIT RULES ----------------
     df.loc[
         df["Credit"].notna() &
         df["Description"].astype(str).str.contains("MISC PAYMENT|TRANSFER FROM|DEPOSIT|DEP. FROM ANOTHER PARTY", case=False),
         "Category"
     ] = "Revenue"
 
+    df.loc[
+        df["Credit"].notna() &
+        df["Description"].astype(str).str.contains("Insurance|HEALTH/DENTAL CLAIM", case=False),
+        "Category"
+    ] = "Other Income"
+
+
+    # ---------------- DEBIT RULES ----------------
     df.loc[
         df["Debit"].notna() &
         df["Description"].astype(str).str.strip().str.lower().eq("misc payment"),
@@ -149,7 +158,7 @@ if uploaded_file is not None:
     - ⚪ **Uncategorized Transactions:** {uncategorized_entries:,}
     """)
 
-    # ---------------- DOWNLOAD TRANSACTIONS ----------------
+    # ---------------- EXPORT TRANSACTIONS ----------------
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine="openpyxl") as writer:
         df.to_excel(writer, index=False, sheet_name="Transactions")
@@ -185,7 +194,7 @@ if uploaded_file is not None:
 
     st.dataframe(pl_df, use_container_width=True, hide_index=True)
 
-    # ---------------- P&L DOWNLOAD ----------------
+    # ---------------- P&L EXPORT ----------------
     pl_output = io.BytesIO()
     with pd.ExcelWriter(pl_output, engine="openpyxl") as writer:
         pl_df.to_excel(writer, index=False, sheet_name="Profit & Loss")
@@ -208,7 +217,7 @@ if uploaded_file is not None:
     st.subheader("📋 Category Summary")
     st.dataframe(display_summary, use_container_width=True, hide_index=True)
 
-    # ---------------- SUMMARY DOWNLOAD ----------------
+    # ---------------- SUMMARY EXPORT ----------------
     summary_output = io.BytesIO()
     with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
         summary.to_excel(writer, index=False, sheet_name="Category Summary")
@@ -231,29 +240,29 @@ else:
         text-align:center;
         border:1px solid #e0e0e0;
     ">
-    <h1 style="color:#1f4e79;">
-    📊 Prime Automated Categorization & Reporting System
-    </h1>
+        <h1 style="color:#1f4e79;">
+        📊 Prime Automated Categorization & Reporting System
+        </h1>
 
-    <h3 style="color:gray;">
-    Prime Accounting and Tax
-    </h3>
+        <h3 style="color:gray;">
+        Prime Accounting and Tax
+        </h3>
 
-    <p style="font-size:18px;">
-    Upload a bank statement or credit card statement to automatically:
-    </p>
+        <p style="font-size:18px;">
+        Upload a bank statement or credit card statement to automatically:
+        </p>
 
-    <p style="font-size:17px;">
-    ✅ Categorize Transactions<br>
-    ✅ Generate Category Summary<br>
-    ✅ Create Profit & Loss Statement<br>
-    ✅ Export Professional Excel Reports
-    </p>
+        <p style="font-size:17px;">
+        ✅ Categorize Transactions<br>
+        ✅ Generate Category Summary<br>
+        ✅ Create Profit & Loss Statement<br>
+        ✅ Export Professional Excel Reports
+        </p>
 
-    <br>
+        <br>
 
-    <p style="color:#1f4e79;font-size:18px;font-weight:bold;">
-    ⬅ Upload your Excel file from the sidebar to begin
-    </p>
+        <p style="color:#1f4e79;font-size:18px;font-weight:bold;">
+        ⬅ Upload your Excel file from the sidebar to begin
+        </p>
     </div>
     """, unsafe_allow_html=True)
