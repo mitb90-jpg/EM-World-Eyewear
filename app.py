@@ -193,15 +193,15 @@ if uploaded_file is not None:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-# ---------------- SUMMARY DOWNLOAD ----------------
-summary_output = io.BytesIO()
+    # ---------------- SUMMARY DOWNLOAD ----------------
+    summary_output = io.BytesIO()
 
-with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
-    summary.to_excel(
-        writer,
-        index=False,
-        sheet_name="Category Summary"
-    )
+    with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
+        summary.to_excel(
+            writer,
+            index=False,
+            sheet_name="Category Summary"
+        )
 
 summary_output.seek(0)
 
