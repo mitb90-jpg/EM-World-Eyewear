@@ -237,43 +237,82 @@ if uploaded_file is not None:
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-st.markdown("""
-<div style="
-    background-color:#f8f9fa;
-    padding:40px;
-    border-radius:15px;
-    text-align:center;
-    border:1px solid #e0e0e0;
-">
+if uploaded_file is not None:
 
-<h1 style="color:#1f4e79;">
-📊 Prime Automated Categorization & Reporting System
-</h1>
+    # all your upload code here
+    # Excel/PDF processing
+    # reports
 
-<h3 style="color:gray;">
-Prime Accounting and Tax
-</h3>
 
-<p style="font-size:18px;">
-Upload a bank statement or credit card statement to automatically:
-</p>
+else:
 
-<p style="font-size:17px;">
-✅ Categorize Transactions<br>
-✅ Generate Category Summary<br>
-✅ Create Profit & Loss Statement<br>
-✅ Export Professional Excel Reports
-</p>
+    st.markdown("""
+    <div style="
+        background: linear-gradient(135deg,#f5f9ff,#ffffff);
+        padding:50px;
+        border-radius:20px;
+        border:1px solid #d9e6f5;
+        text-align:center;
+    ">
 
-<br>
+    <h1 style="
+        color:#1f4e79;
+        font-size:42px;
+        margin-bottom:10px;
+    ">
+    📊 Prime Automated Categorization System
+    </h1>
 
-<p style="
-color:#1f4e79;
-font-size:18px;
-font-weight:bold;
-">
-⬅ Upload your Excel file from the sidebar to begin
-</p>
+    <h3 style="
+        color:#555;
+        font-weight:400;
+    ">
+    Prime Accounting and Tax
+    </h3>
 
-</div>
-""", unsafe_allow_html=True)
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    st.write("")
+
+
+    col1, col2, col3 = st.columns(3)
+
+
+    with col1:
+        st.info("""
+        ### 📂 Upload
+        Upload Excel or PDF bank statements
+        """)
+
+
+    with col2:
+        st.success("""
+        ### 🤖 Categorize
+        Automatically classify transactions
+        """)
+
+
+    with col3:
+        st.warning("""
+        ### 📈 Reports
+        Generate summaries and P&L
+        """)
+
+
+    st.markdown("""
+    <div style="
+        margin-top:30px;
+        padding:20px;
+        background:#f8f9fa;
+        border-radius:15px;
+        text-align:center;
+    ">
+
+    <h3 style="color:#1f4e79;">
+    👈 Start by uploading your file from the sidebar
+    </h3>
+
+    </div>
+    """, unsafe_allow_html=True)
