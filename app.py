@@ -85,10 +85,10 @@ elif uploaded_pdf is not None:
 
     with pdfplumber.open(uploaded_pdf) as pdf:
 
-        current = None
-        started = False
+        current = None       
 
         for page in pdf.pages:
+            started = False
 
             words = page.extract_words()
 
