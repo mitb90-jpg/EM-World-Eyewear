@@ -426,11 +426,27 @@ if uploaded_excel is not None or uploaded_pdf is not None:
             display_df[col] = display_df[col].apply(format_amount)
 
 
-    st.dataframe(
-        display_df,
-        use_container_width=True,
-        hide_index=True
-    )
+# ---------------- BOLD TOTAL ROW ----------------
+
+def bold_transaction_total(row):
+
+    if row["Description"] == "TOTAL":
+        return ["font-weight: bold"] * len(row)
+
+    return [""] * len(row)
+
+
+styled_transactions = display_df.style.apply(
+    bold_transaction_total,
+    axis=1
+)
+
+
+st.dataframe(
+    styled_transactions,
+    use_container_width=True,
+    hide_index=True
+)
 
     # ---------------- CATEGORY STATUS COUNT ----------------
     total_entries = len(df)
