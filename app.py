@@ -245,29 +245,25 @@ if uploaded_excel is not None or uploaded_pdf is not None:
 
     df.columns = df.columns.astype(str).str.strip()
 
-    st.write("Current Columns:", df.columns.tolist())
+
+    # ONLY PDF COLUMN NORMALIZATION
+    if uploaded_pdf is not None:
+
+        df.columns = (
+            df.columns
+            .astype(str)
+            .str.replace("\n", " ", regex=False)
+            .str.strip()
+        )
 
 
-    # ---------------- NORMALIZE PDF COLUMNS ----------------
+        for col in df.columns:
 
-    df.columns = (
-        df.columns
-        .astype(str)
-        .str.replace("\n", " ", regex=False)
-        .str.strip()
-    )
+            if "Deposit" in col or "Credit" in col:
+                df.rename(columns={col: "Credit"}, inplace=True)
 
-
-    for col in df.columns:
-
-        if "Deposit" in col or "Credit" in col:
-            df.rename(columns={col: "Credit"}, inplace=True)
-
-        if "Withdraw" in col or "Debit" in col:
-            df.rename(columns={col: "Debit"}, inplace=True)
-
-
-    st.write("PDF Converted Columns:", df.columns.tolist())
+            if "Withdraw" in col or "Debit" in col:
+                df.rename(columns={col: "Debit"}, inplace=True)
 
 
     # ---------------- RULES ----------------
