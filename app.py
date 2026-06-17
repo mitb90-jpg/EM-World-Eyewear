@@ -85,7 +85,6 @@ elif uploaded_pdf is not None:
         current = None
         started = False
 
-
         for page in pdf.pages:
 
             words = page.extract_words()
@@ -93,7 +92,6 @@ elif uploaded_pdf is not None:
             rows = {}
 
             for w in words:
-
                 y = round(float(w["top"]), 1)
 
                 if y not in rows:
@@ -114,7 +112,6 @@ elif uploaded_pdf is not None:
                 )
 
 
-                # start after Account Details
                 if "Account Details" in text:
                     started = True
                     continue
@@ -124,7 +121,6 @@ elif uploaded_pdf is not None:
                     continue
 
 
-                # ignore headers
                 if "Date" in text and "Description" in text:
                     continue
 
@@ -132,29 +128,12 @@ elif uploaded_pdf is not None:
                 first = line_words[0]["text"]
 
 
-                # combine split dates
-                if len(line_words) > 1:
-
-                    possible_date = (
-                        first +
-                        line_words[1]["text"]
-                    )
-
-                    if (
-                        "/" in possible_date
-                        or "-" in possible_date
-                        or "." in possible_date
-                    ):
-                        first = possible_date
-
-
-
-                # new transaction
+                # transaction line
                 if (
                     "/" in first
                     or "-" in first
                     or "." in first
-                ) and len(first) >= 6:
+                ):
 
 
                     if current:
@@ -176,46 +155,34 @@ elif uploaded_pdf is not None:
                         value = w["text"]
 
 
-                        if x < 280:
+                        if x < 300:
                             current["Description"] += " " + value
 
-                        elif x < 400:
+                        elif x < 420:
                             current["Debit"] += " " + value
 
-                        elif x < 545:
+                        elif x < 560:
                             current["Credit"] += " " + value
 
                         else:
                             current["Balance"] += " " + value
 
 
-
                 else:
 
-                    # continuation line
-
+                    # continuation description
                     if current:
 
-                        for w in line_words:
-
-                            x = float(w["x0"])
-
-                            if x < 280:
-                                current["Description"] += " " + w["text"]
+                        current["Description"] += " " + text
 
 
 
-            if current:
-                transactions.append(current)
+        if current:
+            transactions.append(current)
 
 
 
     df = pd.DataFrame(transactions)
-
-
-    if df.empty:
-        st.error("PDF could not be read. No transactions found.")
-        st.stop()
 
 
     df = df.apply(
@@ -223,11 +190,6 @@ elif uploaded_pdf is not None:
         if x.dtype == "object"
         else x
     )
-
-
-    for col in ["Description", "Debit", "Credit", "Balance"]:
-        if col not in df.columns:
-            df[col] = ""
 
 
     st.write("PDF Converted Table")
