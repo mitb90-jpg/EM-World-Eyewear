@@ -233,10 +233,12 @@ if page == "👥 Clients":
 
     if clients:
 
-        delete_client_name = st.selectbox(
-            "Select Client",
-            ["Select Client"] + clients
-        )
+    delete_client_name = st.selectbox(
+        "Select Client",
+        options=["Select Client"] + clients,
+        index=0,
+        key="delete_client_dropdown"
+    )
 
 
         # DELETE CONFIRMATION
