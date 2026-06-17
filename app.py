@@ -2,6 +2,51 @@ import streamlit as st
 import pandas as pd
 import io
 import re
+import sqlite3
+
+# ---------------- DATABASE ----------------
+
+conn = sqlite3.connect(
+    "prime_accounting.db",
+    check_same_thread=False
+)
+
+cursor = conn.cursor()
+
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS clients
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_name TEXT UNIQUE
+)
+""")
+
+conn.commit()
+
+
+def add_client(name):
+
+    cursor.execute(
+        "INSERT OR IGNORE INTO clients(client_name) VALUES (?)",
+        (name,)
+    )
+
+    conn.commit()
+
+
+
+def get_clients():
+
+    cursor.execute(
+        "SELECT client_name FROM clients ORDER BY client_name"
+    )
+
+    data = cursor.fetchall()
+
+    return [
+        x[0] for x in data
+    ]
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
@@ -51,10 +96,6 @@ with col2:
 
 # ---------------- CLIENT MANAGEMENT ----------------
 
-if "clients" not in st.session_state:
-    st.session_state.clients = []
-
-
 st.sidebar.markdown("## 👥 Clients")
 
 
@@ -65,24 +106,21 @@ new_client = st.sidebar.text_input(
 
 if st.sidebar.button("➕ Add Client"):
 
-    if new_client.strip() != "":
+    if new_client.strip():
 
-        if new_client not in st.session_state.clients:
-            st.session_state.clients.append(new_client)
+        add_client(new_client)
 
-            st.sidebar.success(
-                "Client Added"
-            )
+        st.sidebar.success(
+            "Client Added"
+        )
 
-        else:
-            st.sidebar.warning(
-                "Client already exists"
-            )
+
+clients = get_clients()
 
 
 selected_client = st.sidebar.selectbox(
     "Select Client",
-    ["Select Client"] + st.session_state.clients
+    ["Select Client"] + clients
 )
 
 # ---------------- SIDEBAR ----------------
