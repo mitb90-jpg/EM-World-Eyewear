@@ -172,8 +172,7 @@ elif uploaded_pdf is not None:
                         "Description": "",
                         "Debit": "",
                         "Credit": "",
-                        "Balance": ""
-                    }
+                        }
 
 
                     for w in line_words[1:]:
@@ -188,18 +187,12 @@ elif uploaded_pdf is not None:
                             current["Description"] += " " + value
 
 
-                        elif x >= 260 and x < 420:
+                        elif x >= 260 and x < 360:
                             current["Debit"] += " " + value
 
 
-                        elif x >= 420 and x < 560:
+                        elif x >= 360 and x < 470:
                             current["Credit"] += " " + value
-
-
-                        else:
-                            current["Balance"] += " " + value
-
-
 
                 else:
 
@@ -241,8 +234,7 @@ elif uploaded_pdf is not None:
                 "Date",
                 "Description",
                 "Debit",
-                "Credit",
-                "Balance"
+                "Credit"               
             ]
         ].head(30),
         use_container_width=True
