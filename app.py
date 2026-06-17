@@ -74,10 +74,11 @@ if uploaded_excel is not None:
 elif uploaded_pdf is not None:
 
     import pdfplumber
+    import re
 
     st.success("PDF uploaded successfully")
 
-    all_text = []
+    rows = []
 
     with pdfplumber.open(uploaded_pdf) as pdf:
 
@@ -85,16 +86,24 @@ elif uploaded_pdf is not None:
 
         for page_num, page in enumerate(pdf.pages, start=1):
 
-            st.write("Reading Page:", page_num)
-
             text = page.extract_text()
 
             if text:
-                all_text.append(text)
 
-    st.write("Total Pages With Text:", len(all_text))
+                lines = text.split("\n")
 
-    st.text(all_text[0][:3000])
+                for line in lines:
+
+                    if re.match(r"\d{2}/\d{2}/\d{4}", line):
+
+                        rows.append(line)
+
+
+    df = pd.DataFrame(rows, columns=["Raw"])
+
+    st.write("Extracted Transaction Lines:", len(df))
+
+    st.dataframe(df.head(30))
 
 
 # ---------------- CLEAN DATA ----------------
