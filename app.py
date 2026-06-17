@@ -547,8 +547,24 @@ display_summary = pd.concat(
 st.subheader("📋 Category Summary")
 
 
+# ---------------- BOLD TOTAL ROW ----------------
+
+def bold_total(row):
+
+    if row["Category"] == "TOTAL":
+        return ["font-weight: bold"] * len(row)
+
+    return [""] * len(row)
+
+
+styled_summary = display_summary.style.apply(
+    bold_total,
+    axis=1
+)
+
+
 st.dataframe(
-    display_summary,
+    styled_summary,
     use_container_width=True,
     hide_index=True
 )
