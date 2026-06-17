@@ -120,6 +120,89 @@ uploaded_pdf = st.sidebar.file_uploader(
     type=["pdf"]
 )
 
+# ================= CLIENT PAGE =================
+
+if page == "👥 Clients":
+
+    st.title("👥 Client Management")
+
+
+    st.subheader("Add New Client")
+
+
+    client_name = st.text_input(
+        "Client Name"
+    )
+
+
+    if st.button("➕ Add Client"):
+
+        if client_name.strip():
+
+            add_client(client_name)
+
+            st.success(
+                "Client Added Successfully"
+            )
+
+            st.rerun()
+
+
+
+    st.divider()
+
+
+    st.subheader("Existing Clients")
+
+
+    clients = get_clients()
+
+
+    if clients:
+
+        client_df = pd.DataFrame(
+            clients,
+            columns=["Client Name"]
+        )
+
+        st.dataframe(
+            client_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+
+    else:
+
+        st.info(
+            "No clients added yet"
+        )
+
+
+    st.divider()
+
+
+    st.subheader("Delete Client")
+
+
+    if clients:
+
+        delete_client_name = st.selectbox(
+            "Select Client",
+            clients
+        )
+
+
+        if st.button("🗑️ Delete Client"):
+
+            delete_client(delete_client_name)
+
+            st.success(
+                "Client Deleted"
+            )
+
+            st.rerun()
+
 
 # ---------------- CLIENT MANAGEMENT ----------------
 
