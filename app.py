@@ -249,7 +249,6 @@ if uploaded_excel is not None:
 
     pass
 
-
 else:
 
     st.markdown("""
