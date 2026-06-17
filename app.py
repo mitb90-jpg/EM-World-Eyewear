@@ -74,23 +74,92 @@ if uploaded_excel is not None:
 elif uploaded_pdf is not None:
 
     import pdfplumber
+    import pandas as pd
 
     st.success("PDF uploaded successfully")
 
+    transactions = []
+
     with pdfplumber.open(uploaded_pdf) as pdf:
 
-        page = pdf.pages[0]
+        for page in pdf.pages:
 
-        words = page.extract_words()
+            words = page.extract_words()
 
-        for w in words[:100]:
-            st.write(
-                w["text"],
-                " | x:",
-                round(w["x0"],2),
-                " | y:",
-                round(w["top"],2)
-            )
+            rows = {}
+
+            for w in words:
+
+                y = round(float(w["top"]), 1)
+
+                if y not in rows:
+                    rows[y] = []
+
+                rows[y].append(w)
+
+
+            for y, line in rows.items():
+
+                text = " ".join(
+                    x["text"] for x in line
+                )
+
+                if any(char.isdigit() for char in text):
+
+                    date = ""
+                    desc = ""
+                    debit = ""
+                    credit = ""
+                    balance = ""
+
+                    for w in line:
+
+                        x = float(w["x0"])
+                        value = w["text"]
+
+
+                        if x < 80:
+                            date += " " + value
+
+                        elif x < 280:
+                            desc += " " + value
+
+                        elif x < 400:
+                            debit += " " + value
+
+                        elif x < 545:
+                            credit += " " + value
+
+                        else:
+                            balance += " " + value
+
+
+                    transactions.append(
+                        [
+                            date.strip(),
+                            desc.strip(),
+                            debit.strip(),
+                            credit.strip(),
+                            balance.strip()
+                        ]
+                    )
+
+
+    df = pd.DataFrame(
+        transactions,
+        columns=[
+            "Date",
+            "Description",
+            "Debit",
+            "Credit",
+            "Balance"
+        ]
+    )
+
+
+    st.write("PDF Converted")
+
+    st.dataframe(df.head(50))
 
     # ---------------- SPLIT PDF DATA ----------------
 
