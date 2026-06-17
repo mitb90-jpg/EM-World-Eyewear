@@ -187,11 +187,11 @@ elif uploaded_pdf is not None:
                             current["Description"] += " " + value
 
 
-                        elif x >= 260 and x < 360:
+                        elif x >= 260 and x < 420:
                             current["Debit"] += " " + value
 
 
-                        elif x >= 360 and x < 470:
+                        elif x >= 420 and x < 560:
                             current["Credit"] += " " + value
 
                 else:
