@@ -84,6 +84,8 @@ elif uploaded_pdf is not None:
 
         st.write("Total PDF Pages:", len(pdf.pages))
 
+        current = ""
+
         for page_num, page in enumerate(pdf.pages, start=1):
 
             text = page.extract_text()
@@ -94,14 +96,26 @@ elif uploaded_pdf is not None:
 
                 for line in lines:
 
+                    # transaction starts with date
                     if re.match(r"\d{2}/\d{2}/\d{4}", line):
 
-                        rows.append(line)
+                        if current:
+                            rows.append(current)
+
+                        current = line
+
+                    else:
+                        if current:
+                            current += " " + line
+
+
+        if current:
+            rows.append(current)
 
 
     df = pd.DataFrame(rows, columns=["Raw"])
 
-    st.write("Extracted Transaction Lines:", len(df))
+    st.write("Transactions Found:", len(df))
 
     st.dataframe(df.head(30))
 
