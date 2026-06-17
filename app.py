@@ -96,7 +96,6 @@ elif uploaded_pdf is not None:
 
     st.dataframe(df.head(20))
 
-if uploaded_excel is not None or uploaded_pdf is not None:
 
 # ---------------- CLEAN DATA ----------------
 
