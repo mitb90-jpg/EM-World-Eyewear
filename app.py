@@ -115,10 +115,81 @@ elif uploaded_pdf is not None:
 
     df = pd.DataFrame(rows, columns=["Raw"])
 
-    st.write("Transactions Found:", len(df))
+    # ---------------- SPLIT PDF DATA ----------------
+
+    data = []
+
+    for row in df["Raw"]:
+
+        parts = row.split()
+
+        date = parts[0]
+
+        text = " ".join(parts[1:])
+
+        numbers = re.findall(
+            r"\d{1,3}(?:,\d{3})*\.\d{2}",
+            text
+        )
+
+        description = text
+
+        debit = ""
+        credit = ""
+        balance = ""
+
+        if len(numbers) >= 2:
+
+            balance = numbers[-1]
+
+            amount = numbers[-2]
+
+            description = text.replace(
+                amount,
+                ""
+            ).replace(
+                balance,
+                ""
+            ).strip()
+
+
+            # PDF statement rule:
+            # if amount appears before balance,
+            # determine side from context
+
+            if "DEP" in description.upper() or "CREDIT" in description.upper():
+                credit = amount
+
+            else:
+                debit = amount
+
+
+        data.append(
+            [
+                date,
+                description,
+                debit,
+                credit,
+                balance
+            ]
+        )
+
+
+    df = pd.DataFrame(
+        data,
+        columns=[
+            "Date",
+            "Description",
+            "Debit",
+            "Credit",
+            "Balance"
+        ]
+    )
+
+
+    st.write("Converted PDF Columns")
 
     st.dataframe(df.head(30))
-
 
 # ---------------- CLEAN DATA ----------------
 
