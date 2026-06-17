@@ -87,11 +87,11 @@ elif uploaded_pdf is not None:
 
             st.write("Reading Page:", page_num)
 
-            table = page.extract_table()
-
-            st.write(
-                "Table Found:",
-                table is not None
+            table = page.extract_table(
+                {
+                    "vertical_strategy": "lines",
+                    "horizontal_strategy": "lines"
+                }
             )
 
             if table:
@@ -101,7 +101,8 @@ elif uploaded_pdf is not None:
                     len(table)
                 )
 
-                all_rows.extend(table)
+                for row in table:
+                    all_rows.append(row)
 
 
     df = pd.DataFrame(all_rows)
