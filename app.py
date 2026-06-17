@@ -48,6 +48,15 @@ def get_clients():
         x[0] for x in data
     ]
 
+def delete_client(name):
+
+    cursor.execute(
+        "DELETE FROM clients WHERE client_name = ?",
+        (name,)
+    )
+
+    conn.commit()
+
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Smart Transaction Categorizer",
@@ -96,33 +105,41 @@ with col2:
 
 # ---------------- CLIENT MANAGEMENT ----------------
 
-st.sidebar.markdown("## 👥 Clients")
+if page == "👥 Clients":
+
+    st.title("👥 Client Management")
 
 
-new_client = st.sidebar.text_input(
-    "Add New Client"
-)
+    st.subheader("Existing Clients")
+
+    clients = get_clients()
 
 
-if st.sidebar.button("➕ Add Client"):
+    for c in clients:
+        st.write("👤", c)
 
-    if new_client.strip():
 
-        add_client(new_client)
+    st.divider()
 
-        st.sidebar.success(
-            "Client Added"
+
+    st.subheader("Delete Client")
+
+
+    delete_client_name = st.selectbox(
+        "Select client to delete",
+        clients
+    )
+
+
+    if st.button("🗑️ Delete Client"):
+
+        delete_client(delete_client_name)
+
+        st.success(
+            "Client deleted"
         )
 
-
-clients = get_clients()
-
-
-selected_client = st.sidebar.selectbox(
-    "Select Client",
-    ["Select Client"] + clients
-)
-
+        st.rerun()
 # ---------------- SIDEBAR ----------------
 company = st.sidebar.selectbox(
     "Select Account",
