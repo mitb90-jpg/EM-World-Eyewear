@@ -74,46 +74,23 @@ if uploaded_excel is not None:
 elif uploaded_pdf is not None:
 
     import pdfplumber
-    import re
 
     st.success("PDF uploaded successfully")
 
-    rows = []
-
     with pdfplumber.open(uploaded_pdf) as pdf:
 
-        st.write("Total PDF Pages:", len(pdf.pages))
+        page = pdf.pages[0]
 
-        current = ""
+        words = page.extract_words()
 
-        for page_num, page in enumerate(pdf.pages, start=1):
-
-            text = page.extract_text()
-
-            if text:
-
-                lines = text.split("\n")
-
-                for line in lines:
-
-                    # transaction starts with date
-                    if re.match(r"\d{2}/\d{2}/\d{4}", line):
-
-                        if current:
-                            rows.append(current)
-
-                        current = line
-
-                    else:
-                        if current:
-                            current += " " + line
-
-
-        if current:
-            rows.append(current)
-
-
-    df = pd.DataFrame(rows, columns=["Raw"])
+        for w in words[:100]:
+            st.write(
+                w["text"],
+                " | x:",
+                round(w["x0"],2),
+                " | y:",
+                round(w["top"],2)
+            )
 
     # ---------------- SPLIT PDF DATA ----------------
 
