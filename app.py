@@ -149,23 +149,30 @@ elif uploaded_pdf is not None:
                     }
 
 
-                    for w in line_words[1:]:
+for w in line_words[1:]:
 
-                        x = float(w["x0"])
-                        value = w["text"]
+    x = float(w["x0"])
+    value = w["text"]
 
 
-                        if x < 300:
-                            current["Description"] += " " + value
+    # description area
+    if x < 260:
+        current["Description"] += " " + value
 
-                        elif x < 420:
-                            current["Debit"] += " " + value
 
-                        elif x < 560:
-                            current["Credit"] += " " + value
+    # debit column
+    elif x >= 260 and x < 360:
+        current["Debit"] += " " + value
 
-                        else:
-                            current["Balance"] += " " + value
+
+    # credit column
+    elif x >= 360 and x < 470:
+        current["Credit"] += " " + value
+
+
+    # balance column
+    else:
+        current["Balance"] += " " + value
 
 
                 else:
