@@ -430,9 +430,8 @@ if uploaded_excel is not None or uploaded_pdf is not None:
         "Date": "",
         "Description": "TOTAL",
         "Debit": debit_total,
-        "Credit": credit_total,
-        "Balance": ""
-    }])
+        "Credit": credit_total
+        }])
 
 
     display_df = pd.concat(
