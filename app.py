@@ -70,17 +70,13 @@ if uploaded_excel is not None:
 
     df = pd.read_excel(uploaded_excel)
 
-    # all your existing Excel cleaning
-    # categorization
-    # reports
-    # exports
+    # existing Excel cleaning
+    df.columns = df.columns.astype(str).str.strip()
 
 
 elif uploaded_pdf is not None:
 
     import pdfplumber
-
-    st.success("PDF uploaded successfully")
 
     with pdfplumber.open(uploaded_pdf) as pdf:
 
@@ -94,12 +90,13 @@ elif uploaded_pdf is not None:
 
     df = pd.DataFrame(all_rows)
 
-    st.write("PDF Data Extracted")
+    # same cleaning for PDF
+    df.columns = df.columns.astype(str).str.strip()
 
 
 else:
 
-    st.markdown("Your beautiful welcome screen")
+    st.markdown("Your beautiful opening screen")
 
     # ---------------- CLEAN DATA ----------------
     df.columns = df.columns.astype(str).str.strip()
