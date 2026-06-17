@@ -77,7 +77,7 @@ elif uploaded_pdf is not None:
 
     st.success("PDF uploaded successfully")
 
-    all_rows = []
+    all_text = []
 
     with pdfplumber.open(uploaded_pdf) as pdf:
 
@@ -87,29 +87,14 @@ elif uploaded_pdf is not None:
 
             st.write("Reading Page:", page_num)
 
-            table = page.extract_table(
-                {
-                    "vertical_strategy": "lines",
-                    "horizontal_strategy": "lines"
-                }
-            )
+            text = page.extract_text()
 
-            if table:
+            if text:
+                all_text.append(text)
 
-                st.write(
-                    "Rows on page:",
-                    len(table)
-                )
+    st.write("Total Pages With Text:", len(all_text))
 
-                for row in table:
-                    all_rows.append(row)
-
-
-    df = pd.DataFrame(all_rows)
-
-    st.write("Total Extracted Rows:", len(df))
-
-    st.dataframe(df.head(30))
+    st.text(all_text[0][:3000])
 
 
 # ---------------- CLEAN DATA ----------------
