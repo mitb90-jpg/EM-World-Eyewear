@@ -548,24 +548,24 @@ st.subheader("📋 Category Summary")
 
 
 st.dataframe(
-        display_summary,
-        use_container_width=True,
-        hide_index=True
+    display_summary,
+    use_container_width=True,
+    hide_index=True
+)
+
+
+# ---------------- SUMMARY DOWNLOAD ----------------
+
+summary_output = io.BytesIO()
+
+
+with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
+
+    summary.to_excel(
+        writer,
+        index=False,
+        sheet_name="Category Summary"
     )
-
-
-    # ---------------- SUMMARY DOWNLOAD ----------------
-
-    summary_output = io.BytesIO()
-
-
-    with pd.ExcelWriter(summary_output, engine="openpyxl") as writer:
-
-        summary.to_excel(
-            writer,
-            index=False,
-            sheet_name="Category Summary"
-        )
 
 
     summary_output.seek(0)
