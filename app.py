@@ -89,28 +89,22 @@ elif uploaded_pdf is not None:
 
 if uploaded_excel is not None or uploaded_pdf is not None:
 
-    # CLEAN DATA
+# ---------------- CLEAN DATA ----------------
+
+if uploaded_excel is not None or uploaded_pdf is not None:
 
     df.columns = df.columns.astype(str).str.strip()
 
-    df = df.loc[:, ~df.columns.str.contains("^Unnamed", na=False)]
-
-    df = df.dropna(how="all")
+    st.write("Current Columns:", df.columns.tolist())
 
 
-    # NORMALIZE COLUMNS  👈 here
+    # ---------------- NORMALIZE COLUMNS ----------------
 
     if "Deposits/Credits" in df.columns:
         df["Credit"] = df["Deposits/Credits"]
 
     if "Withdrawals/Debits" in df.columns:
         df["Debit"] = df["Withdrawals/Debits"]
-
-
-    df["Category"] = ""
-
-
-    # RULES continue below
 
 
     # ---------------- RULES ----------------
