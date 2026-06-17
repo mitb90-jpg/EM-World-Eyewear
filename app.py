@@ -249,14 +249,8 @@ if uploaded_excel is not None:
 
     pass
 
-else:
-        
 
-    # YOUR OLD WORKING CODE MUST BE HERE
-    # Excel
-    # PDF
-    # categorization
-    # reports
+else:
 
     st.markdown("""
     <div style="
