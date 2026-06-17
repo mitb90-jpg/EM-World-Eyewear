@@ -150,10 +150,8 @@ if (
     or "." in first
 ) and len(first) >= 6:
 
-
     if current:
         transactions.append(current)
-
 
     current = {
         "Date": first,
@@ -163,24 +161,22 @@ if (
         "Balance": ""
     }
 
+    for w in line_words[1:]:
 
-                    for w in line_words[1:]:
+        x = float(w["x0"])
+        value = w["text"]
 
-                        x = float(w["x0"])
-                        value = w["text"]
+        if x < 280:
+            current["Description"] += " " + value
 
+        elif x < 400:
+            current["Debit"] += " " + value
 
-                        if x < 280:
-                            current["Description"] += " " + value
+        elif x < 545:
+            current["Credit"] += " " + value
 
-                        elif x < 400:
-                            current["Debit"] += " " + value
-
-                        elif x < 545:
-                            current["Credit"] += " " + value
-
-                        else:
-                            current["Balance"] += " " + value
+        else:
+            current["Balance"] += " " + value
 
 
                 else:
