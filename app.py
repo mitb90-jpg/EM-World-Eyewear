@@ -217,13 +217,48 @@ if page == "👥 Clients":
         )
 
 
-        if st.button("🗑️ Delete Client"):
+# ---------------- DELETE CONFIRMATION ----------------
+
+if "confirm_delete" not in st.session_state:
+    st.session_state.confirm_delete = False
+
+
+if st.button("🗑️ Delete Client"):
+
+    st.session_state.confirm_delete = True
+
+
+
+if st.session_state.confirm_delete:
+
+    st.warning(
+        f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
+    )
+
+
+    col1, col2 = st.columns(2)
+
+
+    with col1:
+
+        if st.button("✅ Yes, Delete"):
 
             delete_client(delete_client_name)
+
+            st.session_state.confirm_delete = False
 
             st.success(
                 "Client Deleted"
             )
+
+            st.rerun()
+
+
+    with col2:
+
+        if st.button("❌ Cancel"):
+
+            st.session_state.confirm_delete = False
 
             st.rerun()
 
