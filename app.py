@@ -175,6 +175,30 @@ if page == "👥 Clients":
     st.title("👥 Client Management")
 
 
+    st.subheader("Add New Client")
+
+    client_name = st.text_input(
+        "Client Name"
+    )
+
+
+    if st.button("➕ Add Client"):
+
+        if client_name.strip():
+
+            add_client(client_name)
+
+            st.success(
+                "Client Added Successfully"
+            )
+
+            st.rerun()
+
+
+
+    st.divider()
+
+
     st.subheader("Existing Clients")
 
 
@@ -188,13 +212,11 @@ if page == "👥 Clients":
             columns=["Client Name"]
         )
 
-
         st.dataframe(
             client_df,
             use_container_width=True,
             hide_index=True
         )
-
 
     else:
 
@@ -208,7 +230,6 @@ if page == "👥 Clients":
 
     st.subheader("Delete Client")
 
-
     if clients:
 
         delete_client_name = st.selectbox(
@@ -217,50 +238,48 @@ if page == "👥 Clients":
         )
 
 
-# ---------------- DELETE CONFIRMATION ----------------
+        # DELETE CONFIRMATION
 
-if "confirm_delete" not in st.session_state:
-    st.session_state.confirm_delete = False
-
-
-if st.button("🗑️ Delete Client"):
-
-    st.session_state.confirm_delete = True
-
-
-
-if st.session_state.confirm_delete:
-
-    st.warning(
-        f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
-    )
-
-
-    col1, col2 = st.columns(2)
-
-
-    with col1:
-
-        if st.button("✅ Yes, Delete"):
-
-            delete_client(delete_client_name)
-
+        if "confirm_delete" not in st.session_state:
             st.session_state.confirm_delete = False
 
-            st.success(
-                "Client Deleted"
+
+        if st.button("🗑️ Delete Client"):
+
+            st.session_state.confirm_delete = True
+
+
+
+        if st.session_state.confirm_delete:
+
+            st.warning(
+                f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
             )
 
-            st.rerun()
+
+            c1, c2 = st.columns(2)
 
 
-    with col2:
+            with c1:
 
-        if st.button("❌ Cancel"):
+                if st.button("✅ Yes, Delete"):
 
-            st.session_state.confirm_delete = False
+                    delete_client(delete_client_name)
 
-            st.rerun()
+                    st.session_state.confirm_delete = False
+
+                    st.success("Client Deleted")
+
+                    st.rerun()
+
+
+            with c2:
+
+                if st.button("❌ Cancel"):
+
+                    st.session_state.confirm_delete = False
+
+                    st.rerun()
 
 # ================= MAIN =================
 
