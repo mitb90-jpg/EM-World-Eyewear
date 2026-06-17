@@ -117,27 +117,27 @@ elif uploaded_pdf is not None:
                     continue
 
 
-# ignore bottom summary rows
-if (
-    "DEBITS" in text.upper()
-    or "CREDITS" in text.upper()
-    or "TOTAL AMOUNT" in text.upper()
-):
-    continue
+                # ignore bottom summary rows
+                if (
+                    "DEBITS" in text.upper()
+                    or "CREDITS" in text.upper()
+                    or "TOTAL AMOUNT" in text.upper()
+                ):
+                    continue
 
 
-# ignore headers and summary tables
+                # ignore headers and summary tables
 
-ignore_text = text.upper()
+                ignore_text = text.upper()
 
-if (
-    ("DATE" in ignore_text and "DESCRIPTION" in ignore_text)
-    or "NO. OF DEBITS" in ignore_text
-    or "TOTAL AMOUNT" in ignore_text
-    or "NO. OF CREDITS" in ignore_text
-    or "PAGE -" in ignore_text
-):
-    continue
+                if (
+                    ("DATE" in ignore_text and "DESCRIPTION" in ignore_text)
+                    or "NO. OF DEBITS" in ignore_text
+                    or "TOTAL AMOUNT" in ignore_text
+                    or "NO. OF CREDITS" in ignore_text
+                    or "PAGE -" in ignore_text
+                ):
+                    continue
 
 
                 first = line_words[0]["text"]
