@@ -4,6 +4,3 @@ pandas
 numpy
 matplotlib
 pdfplumber
-io
-os
-sqlite3
