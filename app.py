@@ -299,8 +299,9 @@ uploaded_excel = st.sidebar.file_uploader(
 )
 
 uploaded_pdf = st.sidebar.file_uploader(
-    "Upload PDF File",
-    type=["pdf"]
+    "Upload PDF File(s)",
+    type=["pdf"],
+    accept_multiple_files=True
 )
 
 
@@ -621,7 +622,7 @@ if uploaded_excel is not None:
     df = df.loc[:, ~df.columns.astype(str).str.contains("^Unnamed")]
 
 
-elif uploaded_pdf is not None:
+elif uploaded_pdf is not None
 
     import pdfplumber
 
@@ -629,7 +630,9 @@ elif uploaded_pdf is not None:
 
     transactions = []
 
-    with pdfplumber.open(uploaded_pdf) as pdf:
+for pdf_file in uploaded_pdf:
+
+    with pdfplumber.open(pdf_file) as pdf:
 
         current = None       
 
