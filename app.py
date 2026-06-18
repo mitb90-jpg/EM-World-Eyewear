@@ -311,22 +311,6 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("### 👥 Client Management")
 
 
-new_client = st.sidebar.text_input(
-    "Add New Client"
-)
-
-
-if st.sidebar.button("➕ Add Client"):
-
-    if new_client.strip():
-
-        add_client(new_client)
-
-        st.sidebar.success(
-            "Client Added"
-        )
-
-
 clients = get_clients()
 
 
@@ -1189,24 +1173,61 @@ if uploaded_excel is not None:
 
 else:
 
+    st.markdown("""
+    <style>
+
+    .main-title {
+        font-size:45px;
+        font-weight:700;
+        color:#1f4e79;
+        margin-bottom:0px;
+    }
+
+    .sub-title {
+        font-size:22px;
+        color:#666;
+        margin-top:0px;
+    }
+
+    .card {
+        background:white;
+        padding:25px;
+        border-radius:18px;
+        border:1px solid #e5e7eb;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+        text-align:center;
+    }
+
+    .card-title {
+        font-size:18px;
+        color:#666;
+    }
+
+    .card-number {
+        font-size:35px;
+        font-weight:bold;
+        color:#1f4e79;
+    }
+
+    </style>
+    """, unsafe_allow_html=True)
+
+
     st.markdown(
         """
-        <h1 style="color:#1f4e79;">
-        📊 Prime Accounting System
-        </h1>
+        <div class="main-title">
+        📊 Prime Accounting Dashboard
+        </div>
+
+        <div class="sub-title">
+        Smart accounting automation platform
+        </div>
         """,
         unsafe_allow_html=True
     )
 
 
-    st.markdown(
-        """
-        <p style="font-size:22px;color:#555;">
-        Automated accounting workflow management
-        </p>
-        """,
-        unsafe_allow_html=True
-    )
+    st.write("")
 
 
     if selected_client != "Select Client":
@@ -1218,55 +1239,123 @@ else:
     else:
 
         st.info(
-            "Please select a client"
+            "Select a client to begin"
         )
 
 
-    col1, col2, col3, col4 = st.columns(4)
+    st.write("")
 
 
-    col1, col2, col3, col4 = st.columns(4)
-
-
-    with col1:
-        st.metric("👥 Clients", "0")
-
-    with col2:
-        st.metric("📄 Statements", "0")
-
-    with col3:
-        st.metric("💰 Revenue", "$0")
-
-    with col4:
-        st.metric("💸 Expenses", "$0")
-
-
-    st.divider()
-
-
-    st.subheader("Quick Actions")
-
-
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3, c4 = st.columns(4)
 
 
     with c1:
-        st.button(
-            "➕ Add Client",
-            use_container_width=True
+
+        st.markdown(
+            """
+            <div class="card">
+            <div class="card-title">
+            👥 Clients
+            </div>
+
+            <div class="card-number">
+            {}
+            </div>
+
+            </div>
+            """.format(len(get_clients())),
+            unsafe_allow_html=True
         )
 
 
     with c2:
+
+        st.markdown(
+            """
+            <div class="card">
+
+            <div class="card-title">
+            📄 Statements
+            </div>
+
+            <div class="card-number">
+            0
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with c3:
+
+        st.markdown(
+            """
+            <div class="card">
+
+            <div class="card-title">
+            💰 Revenue
+            </div>
+
+            <div class="card-number">
+            $0
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    with c4:
+
+        st.markdown(
+            """
+            <div class="card">
+
+            <div class="card-title">
+            💸 Expenses
+            </div>
+
+            <div class="card-number">
+            $0
+            </div>
+
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+    st.write("")
+
+    st.divider()
+
+
+    st.subheader("🚀 Quick Actions")
+
+
+    a,b,c = st.columns(3)
+
+
+    with a:
+        st.button(
+            "👥 Manage Clients",
+            use_container_width=True
+        )
+
+
+    with b:
         st.button(
             "📂 Upload Statement",
             use_container_width=True
         )
 
 
-    with c3:
+    with c:
         st.button(
-            "📊 Reports",
+            "📊 View Reports",
             use_container_width=True
         )
 
@@ -1274,13 +1363,13 @@ else:
     st.divider()
 
 
-    st.subheader("Recent Activity")
+    st.subheader("📌 Recent Activity")
 
 
     empty_df = pd.DataFrame(
         columns=[
             "Client",
-            "Statement",
+            "Activity",
             "Date",
             "Status"
         ]
