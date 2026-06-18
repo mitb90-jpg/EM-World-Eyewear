@@ -307,7 +307,8 @@ uploaded_pdf = st.sidebar.file_uploader(
 
 # ---------------- CLIENT MANAGEMENT ----------------
 
-st.sidebar.markdown("## 👥 Clients")
+st.sidebar.markdown("---")
+st.sidebar.markdown("### 👥 Client Management")
 
 
 new_client = st.sidebar.text_input(
@@ -340,7 +341,7 @@ st.sidebar.markdown("---")
 
 
 page = st.sidebar.radio(
-    "Navigation",
+    "📋 Navigation",
     [
         "🏠 Dashboard",
         "👥 Clients",
