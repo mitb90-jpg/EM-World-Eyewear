@@ -924,7 +924,7 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-if uploaded_excel is not None or uploaded_pdf is not None:
+if ("df" in locals()) and (uploaded_excel is not None or uploaded_pdf):
 
     # ---------------- Sr No ----------------
     df = df.reset_index(drop=True)
