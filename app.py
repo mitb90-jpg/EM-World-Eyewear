@@ -21,8 +21,6 @@ CREATE TABLE IF NOT EXISTS clients
 )
 """)
 
-
-
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS accounts
 (
@@ -34,10 +32,18 @@ CREATE TABLE IF NOT EXISTS accounts
 )
 """)
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS statements
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    client_id INTEGER,
+    file_name TEXT,
+    upload_date TEXT,
+    FOREIGN KEY(client_id) REFERENCES clients(id)
+)
+""")
 
 conn.commit()
-
-
 
 # ---------------- DATABASE FUNCTIONS ----------------
 
