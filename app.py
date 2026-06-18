@@ -767,10 +767,6 @@ elif selected_client != "Select Client" and uploaded_pdf is not None:
 if uploaded_excel is not None or uploaded_pdf is not None:
 
     df.columns = df.columns.astype(str).str.strip()
-        st.warning("No transactions found in this PDF.")
-        st.stop()
-
-    df.columns = df.columns.astype(str).str.strip()
 
 
     # PDF column normalization
