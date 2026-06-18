@@ -6,6 +6,8 @@ import json
 import os
 
 from supabase import create_client, Client
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 # ---------------- DATABASE ----------------
@@ -694,8 +696,70 @@ if page == "🧾 Sales":
 
     if st.button("🧾 Generate Invoice"):
 
+        buffer = io.BytesIO()
+
+
+        doc = SimpleDocTemplate(
+            buffer
+        )
+
+
+        styles = getSampleStyleSheet()
+
+
+        content = []
+
+
+        content.append(
+            Paragraph(
+                "Prime Accounting Invoice",
+                styles["Title"]
+            )
+        )
+
+
+        content.append(
+            Spacer(1, 12)
+        )
+
+
+        content.append(
+            Paragraph(
+                f"""
+                Customer: {customer_name}<br/>
+                Invoice Number: {invoice_number}<br/>
+                Invoice Date: {invoice_date}<br/>
+                Due Date: {due_date}<br/><br/>
+
+                Item: {item_description}<br/>
+                Quantity: {quantity}<br/>
+                Rate: ${rate:,.2f}<br/>
+                Amount: ${amount:,.2f}<br/><br/>
+
+                Tax: ${tax:,.2f}<br/>
+                <b>Total: ${total:,.2f}</b>
+                """,
+                styles["BodyText"]
+            )
+        )
+
+
+        doc.build(content)
+
+
+        buffer.seek(0)
+
+
         st.success(
             "Invoice generated successfully"
+        )
+
+
+        st.download_button(
+            label="⬇️ Download Invoice PDF",
+            data=buffer,
+            file_name=f"Invoice_{invoice_number}.pdf",
+            mime="application/pdf"
         )
 
 # ================= MAIN =================
