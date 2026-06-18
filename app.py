@@ -766,6 +766,10 @@ elif selected_client != "Select Client" and uploaded_pdf is not None:
 
 if uploaded_excel is not None or uploaded_pdf is not None:
 
+    if "df" not in locals():
+        st.warning("PDF could not be read. No transactions found.")
+        st.stop()
+
     df.columns = df.columns.astype(str).str.strip()
 
 
