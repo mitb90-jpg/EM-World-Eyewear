@@ -731,7 +731,7 @@ if page == "🧾 Sales":
 
 
 
-    # -------- DISPLAY ITEMS --------
+    # -------- DISPLAY / EDIT ITEMS --------
 
     if st.session_state.invoice_items:
 
@@ -740,15 +740,50 @@ if page == "🧾 Sales":
         )
 
 
-        st.dataframe(
+        edited_items = st.data_editor(
             item_df,
             use_container_width=True,
-            hide_index=True
+            hide_index=True,
+            num_rows="dynamic",
+            column_config={
+
+                "Description": st.column_config.TextColumn(
+                    "Description"
+                ),
+
+                "Quantity": st.column_config.NumberColumn(
+                    "Quantity",
+                    min_value=1,
+                    step=1
+                ),
+
+                "Rate": st.column_config.NumberColumn(
+                    "Rate",
+                    min_value=0.0,
+                    step=0.01
+                ),
+
+                "Amount": st.column_config.NumberColumn(
+                    "Amount",
+                    disabled=True
+                )
+            }
+        )
+
+
+        edited_items["Amount"] = (
+            edited_items["Quantity"]
+            * edited_items["Rate"]
+        )
+
+
+        st.session_state.invoice_items = (
+            edited_items.to_dict("records")
         )
 
 
         amount = (
-            item_df["Amount"]
+            edited_items["Amount"]
             .sum()
         )
 
