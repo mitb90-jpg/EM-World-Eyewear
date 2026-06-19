@@ -790,7 +790,7 @@ if page == "🧾 Sales":
     calculated_hst = amount * (hst_rate / 100)
 
 
-    hst = st.number_input(
+    tax = st.number_input(
         "HST Amount",
         min_value=0.0,
         value=float(calculated_hst),
@@ -798,15 +798,7 @@ if page == "🧾 Sales":
     )
 
 
-    total = amount + hst
-
-
-    st.success(
-        f"Invoice Total: ${total:,.2f}"
-    )
-
-
-    st.divider()
+    total = amount + tax
 
 
 
