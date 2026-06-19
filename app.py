@@ -622,23 +622,21 @@ if page == "🏦 Accounts":
                     "No accounts added for this client"
                 )
 
-# ================= SALES PAGE =================
-
 if page == "🧾 Sales":
 
     st.title("🧾 Sales & Invoice Management")
 
 
-# -------- NEW / RESET INVOICE --------
+    # -------- NEW / RESET INVOICE --------
 
-if st.button("🔄 New Invoice / Refresh"):
+    if st.button("🔄 New Invoice / Refresh"):
 
-    st.session_state.invoice_items = []
+        st.session_state.invoice_items = []
 
-    if "invoice_number" in st.session_state:
-        del st.session_state.invoice_number
+        if "invoice_number" in st.session_state:
+            del st.session_state.invoice_number
 
-    st.rerun()
+        st.rerun()
 
 
     # ---------- INVOICE BASIC DETAILS ----------
