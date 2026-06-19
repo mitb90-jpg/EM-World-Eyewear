@@ -1176,6 +1176,13 @@ if page == "🧾 Sales":
             mime="application/pdf"
         )
 
+
+        # Prepare for next invoice
+
+        st.session_state.invoice_items = []
+
+        st.rerun()
+
     # ================= INVOICE HISTORY =================
 
 
