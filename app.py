@@ -897,7 +897,25 @@ if page == "🧾 Sales":
 
     st.divider()
 
-        # -------- UNPAID INVOICES --------
+        # -------- GENERATE INVOICE --------
+
+    if st.button("🧾 Generate Invoice"):
+
+        buffer = io.BytesIO()
+
+        doc = SimpleDocTemplate(
+            buffer,
+            title="Prime Accounting Invoice"
+        )
+
+
+        styles = getSampleStyleSheet()
+
+        content = []
+
+        # continue PDF code here...
+
+    # -------- UNPAID INVOICES --------
 
     st.divider()
 
@@ -942,25 +960,6 @@ if page == "🧾 Sales":
         st.info(
             "No unpaid invoices"
         )
-
-
-
-    # -------- GENERATE INVOICE --------
-
-    if st.button("🧾 Generate Invoice"):
-
-        buffer = io.BytesIO()
-
-        doc = SimpleDocTemplate(
-            buffer,
-            title="Prime Accounting Invoice"
-        )
-
-
-        styles = getSampleStyleSheet()
-
-        content = []
-
 
         # ================= INVOICE HEADER =================
 
