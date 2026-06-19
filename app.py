@@ -155,6 +155,10 @@ def add_invoice_items(invoice_number, items):
         ).execute()
 
 
+def generate_invoice_pdf(invoice_number):
+    ... (the whole function from before) ...
+
+
 def get_invoices():
 
     response = (
@@ -1299,6 +1303,17 @@ if page == "📄 Invoice History":
             "Select Invoice",
             ["Select Invoice"] + invoice_numbers
         )
+
+        if selected_invoice != "Select Invoice":
+
+            pdf_buffer = generate_invoice_pdf(selected_invoice)
+
+            st.download_button(
+                label="⬇️ Download Invoice PDF",
+                data=pdf_buffer,
+                file_name=f"Invoice_{selected_invoice}.pdf",
+                mime="application/pdf"
+            )
 
 
         if "confirm_invoice_delete" not in st.session_state:
