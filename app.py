@@ -686,7 +686,7 @@ if "invoice_items" not in st.session_state:
     st.session_state.invoice_items = []
 
 
-st.subheader("Invoice Items")
+
 
 
 col1, col2, col3 = st.columns(3)
