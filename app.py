@@ -696,26 +696,48 @@ if page == "🧾 Sales":
     )
 
 
-    total = amount + tax
+total = amount + tax
 
 
-    st.success(
-        f"Invoice Total: ${total:,.2f}"
+st.success(
+    f"Invoice Total: ${total:,.2f}"
+)
+
+
+# -------- PAYMENT STATUS --------
+
+payment_status = st.selectbox(
+    "Payment Status",
+    [
+        "Unpaid",
+        "Paid"
+    ]
+)
+
+
+if payment_status == "Paid":
+
+    received_date = st.date_input(
+        "Payment Received Date"
     )
 
+else:
 
-    if st.button("🧾 Generate Invoice"):
+    received_date = None
 
-        buffer = io.BytesIO()
 
-        doc = SimpleDocTemplate(
-            buffer,
-            title="Invoice"
-        )
+if st.button("🧾 Generate Invoice"):
 
-        styles = getSampleStyleSheet()
+    buffer = io.BytesIO()
 
-        content = []
+    doc = SimpleDocTemplate(
+        buffer,
+        title="Invoice"
+    )
+
+    styles = getSampleStyleSheet()
+
+    content = []
 
         # -------- HEADER --------
 
