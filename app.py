@@ -388,6 +388,18 @@ div.stDownloadButton > button {
 div.stDownloadButton > button:hover {
     background-color: #163a5c;
 }
+div.stButton > button {
+    width: 100%;
+    background-color: #1f4e79;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 10px;
+}
+div.stButton > button:hover {
+    background-color: #163a5c;
+}
 </style>
 """, unsafe_allow_html=True)
 
