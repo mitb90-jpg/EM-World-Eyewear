@@ -683,38 +683,40 @@ if page == "🧾 Sales":
     st.subheader("Invoice Items")
 
 
-    col1, col2, col3 = st.columns(3)
+    with st.form(
+        "invoice_item_form",
+        clear_on_submit=True
+    ):
 
+        col1, col2, col3 = st.columns(3)
 
-    with col1:
+        with col1:
 
-        item_description = st.text_input(
-            "Description",
-            key="item_desc"
+            item_description = st.text_input(
+                "Description"
+            )
+
+        with col2:
+
+            quantity = st.number_input(
+                "Quantity",
+                min_value=1,
+                value=1
+            )
+
+        with col3:
+
+            rate = st.number_input(
+                "Rate",
+                min_value=0.0
+            )
+
+        add_item = st.form_submit_button(
+            "➕ Add Item"
         )
 
 
-    with col2:
-
-        quantity = st.number_input(
-            "Quantity",
-            min_value=1,
-            value=1,
-            key="item_qty"
-        )
-
-
-    with col3:
-
-        rate = st.number_input(
-            "Rate",
-            min_value=0.0,
-            key="item_rate"
-        )
-
-
-
-    if st.button("➕ Add Item"):
+    if add_item:
 
         if item_description.strip():
 
@@ -726,15 +728,8 @@ if page == "🧾 Sales":
                     "Amount": quantity * rate
                 }
             )
-
-
-            # clear input boxes after adding item
-
-            st.session_state.item_desc = ""
-            st.session_state.item_qty = 1
-            st.session_state.item_rate = 0.0
-
-
+    with st.form("invoice_item_form", clear_on_submit=True):
+        
             st.rerun()
 
 
