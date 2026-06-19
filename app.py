@@ -730,23 +730,27 @@ if st.button("🧾 Generate Invoice"):
 
     buffer = io.BytesIO()
 
+
     doc = SimpleDocTemplate(
         buffer,
         title="Invoice"
     )
 
+
     styles = getSampleStyleSheet()
+
 
     content = []
 
-        # -------- HEADER --------
 
-        content.append(
-            Paragraph(
-                "<font size=22 color='#1f7189'><b>Prime Accounting and Tax</b></font>",
-                styles["Title"]
-            )
+    # -------- HEADER --------
+
+    content.append(
+        Paragraph(
+            "Prime Accounting and Tax",
+            styles["Title"]
         )
+    )
 
         content.append(
             Paragraph(
