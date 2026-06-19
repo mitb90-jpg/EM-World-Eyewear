@@ -645,7 +645,7 @@ if page == "🧾 Sales":
 
         invoice_date = st.date_input(
             "Invoice Date",
-            format="DD-MMMM-YYYY"
+            format="DD-MM-YYYY"
         )
 
 
@@ -667,7 +667,7 @@ if page == "🧾 Sales":
 
         due_date = st.date_input(
             "Due Date",
-            format="DD-MMMM-YYYY"
+            format="DD-MM-YYYY"
         )
 
 
