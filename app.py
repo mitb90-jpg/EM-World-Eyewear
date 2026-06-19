@@ -629,6 +629,18 @@ if page == "🧾 Sales":
     st.title("🧾 Sales & Invoice Management")
 
 
+# -------- NEW / RESET INVOICE --------
+
+if st.button("🔄 New Invoice / Refresh"):
+
+    st.session_state.invoice_items = []
+
+    if "invoice_number" in st.session_state:
+        del st.session_state.invoice_number
+
+    st.rerun()
+
+
     # ---------- INVOICE BASIC DETAILS ----------
 
     col1, col2 = st.columns(2)
