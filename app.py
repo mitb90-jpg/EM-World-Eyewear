@@ -153,11 +153,103 @@ def add_invoice_items(invoice_number, items):
                 "amount": item["Amount"]
             }
         ).execute()
-
-
 def generate_invoice_pdf(invoice_number):
-    ... (the whole function from before) ...
 
+    invoice = (
+        supabase
+        .table("invoices")
+        .select("*")
+        .eq("invoice_number", invoice_number)
+        .execute()
+    ).data[0]
+
+    items = (
+        supabase
+        .table("invoice_items")
+        .select("*")
+        .eq("invoice_number", invoice_number)
+        .execute()
+    ).data
+
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, title="Prime Accounting Invoice")
+    styles = getSampleStyleSheet()
+    content = []
+
+    logo = Image("Logo.jpeg", width=80, height=80)
+
+    header_data = [[
+        Paragraph(
+            "<b><font size=20 color='white'>Prime Accounting & Tax</font></b>"
+            "<br/>"
+            "<font size=11 color='white'>Toronto, Ontario</font>",
+            styles["Normal"]
+        ),
+        logo
+    ]]
+
+    header_table = Table(header_data, colWidths=[350, 100])
+    header_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#1f4e79")),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+    ]))
+
+    content.append(header_table)
+    content.append(Spacer(1, 20))
+
+    invoice_info = [
+        ["Invoice Sent To", invoice["client_name"]],
+        ["Invoice Number", invoice["invoice_number"]],
+        ["Invoice Date", invoice["invoice_date"]],
+        ["Due Date", invoice["due_date"]],
+        ["Payment Status", invoice["payment_status"]],
+    ]
+
+    invoice_table = Table(invoice_info, colWidths=[150, 280])
+    invoice_table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey)
+    ]))
+
+    content.append(invoice_table)
+    content.append(Spacer(1, 20))
+
+    item_data = [["Description", "Qty", "Rate", "Amount"]]
+
+    for item in items:
+        item_data.append([
+            item["description"],
+            str(item["quantity"]),
+            f"${item['rate']:,.2f}",
+            f"${item['amount']:,.2f}"
+        ])
+
+    item_table = Table(item_data, colWidths=[220, 60, 80, 80])
+    item_table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f7189")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+    ]))
+
+    content.append(item_table)
+    content.append(Spacer(1, 20))
+
+    total_table = Table([
+        ["Tax", f"${invoice['tax']:,.2f}"],
+        ["TOTAL", f"${invoice['total']:,.2f}"]
+    ], colWidths=[300, 120])
+
+    total_table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey)
+    ]))
+
+    content.append(total_table)
+    content.append(Spacer(1, 30))
+    content.append(Paragraph("Thank you for your business.", styles["Normal"]))
+
+    doc.build(content)
+    buffer.seek(0)
+
+    return buffer
 
 def get_invoices():
 
