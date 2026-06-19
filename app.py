@@ -735,12 +735,10 @@ if page == "🧾 Sales":
                     "Amount": quantity * rate
                 }
             )
-    with st.form("invoice_item_form", clear_on_submit=True):
-        
+
             
-
-
-
+            st.return()
+            
     # -------- DISPLAY / EDIT ITEMS --------
 
     if st.session_state.invoice_items:
