@@ -769,29 +769,23 @@ st.info(
 
 
 
-    st.info(
-        f"Service Amount: ${amount:,.2f}"
-    )
+# -------- TAX & TOTAL --------
+
+tax = st.number_input(
+    "Tax",
+    min_value=0.0
+)
 
 
-
-    tax = st.number_input(
-        "Tax",
-        min_value=0.0
-    )
+total = amount + tax
 
 
-
-    total = amount + tax
-
-
-
-    st.success(
-        f"Invoice Total: ${total:,.2f}"
-    )
+st.success(
+    f"Invoice Total: ${total:,.2f}"
+)
 
 
-    st.divider()
+st.divider()
 
     # ================= INVOICE HISTORY =================
 
