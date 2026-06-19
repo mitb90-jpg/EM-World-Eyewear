@@ -771,9 +771,22 @@ if page == "🧾 Sales":
         )
 
 
+        edited_items["Quantity"] = pd.to_numeric(
+            edited_items["Quantity"],
+            errors="coerce"
+        ).fillna(0)
+
+
+        edited_items["Rate"] = pd.to_numeric(
+            edited_items["Rate"],
+            errors="coerce"
+        ).fillna(0)
+
+
         edited_items["Amount"] = (
             edited_items["Quantity"]
-            * edited_items["Rate"]
+            *
+            edited_items["Rate"]
         )
 
 
