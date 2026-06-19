@@ -1238,6 +1238,19 @@ if page == "🧾 Sales":
         )
 
 
+        # clear for next invoice
+
+        st.session_state.invoice_items = []
+
+
+        if "current_invoice_number" in st.session_state:
+
+            del st.session_state.current_invoice_number
+
+
+        st.rerun()
+
+
 
 
     # ================= INVOICE HISTORY =================
