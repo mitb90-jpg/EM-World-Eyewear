@@ -759,9 +759,6 @@ if page == "🧾 Sales":
     )
 
 
-    st.divider()
-
-
     tax = st.number_input(
         "Tax",
         min_value=0.0
@@ -776,10 +773,16 @@ if page == "🧾 Sales":
     )
 
 
+    st.divider()
+
+
     # -------- PAYMENT STATUS --------
 
+    st.subheader("Payment Status")
+
+
     payment_status = st.selectbox(
-        "Payment Status",
+        "Status",
         [
             "Unpaid",
             "Paid"
@@ -803,9 +806,10 @@ if page == "🧾 Sales":
 
 
 
-    if st.button(
-        "🧾 Generate Invoice"
-    ):
+    # -------- GENERATE INVOICE --------
+
+
+    if st.button("🧾 Generate Invoice"):
 
 
         buffer = io.BytesIO()
@@ -813,7 +817,7 @@ if page == "🧾 Sales":
 
         doc = SimpleDocTemplate(
             buffer,
-            title="Invoice"
+            title="Prime Accounting Invoice"
         )
 
 
@@ -823,12 +827,11 @@ if page == "🧾 Sales":
         content = []
 
 
-        # -------- HEADER --------
-
+        # HEADER
 
         content.append(
             Paragraph(
-                "<font size=22 color='#1f7189'><b>Prime Accounting and Tax</b></font>",
+                "Prime Accounting & Tax",
                 styles["Title"]
             )
         )
@@ -836,7 +839,7 @@ if page == "🧾 Sales":
 
         content.append(
             Paragraph(
-                "<font size=14 color='#666666'>Professional Service Invoice</font>",
+                "Professional Invoice",
                 styles["Heading2"]
             )
         )
@@ -847,37 +850,47 @@ if page == "🧾 Sales":
         )
 
 
-        # -------- CUSTOMER DETAILS --------
+        # DETAILS
 
 
         invoice_info = [
 
-            ["Invoice Number", invoice_number],
+            [
+                "Invoice Issued By",
+                "Prime Accounting & Tax"
+            ],
 
-            ["Invoice Date", str(invoice_date)],
+            [
+                "Invoice Sent To",
+                customer_name
+            ],
 
-            ["Due Date", str(due_date)],
+            [
+                "Invoice Number",
+                invoice_number
+            ],
 
-            ["Bill To", customer_name],
+            [
+                "Invoice Date",
+                str(invoice_date)
+            ],
 
-            ["Status", payment_status],
+            [
+                "Due Date",
+                str(due_date)
+            ],
+
+            [
+                "Payment Status",
+                payment_status
+            ]
 
         ]
 
 
-        if received_date:
-
-            invoice_info.append(
-                [
-                    "Payment Received",
-                    str(received_date)
-                ]
-            )
-
-
         invoice_table = Table(
             invoice_info,
-            colWidths=[140,300]
+            colWidths=[150,280]
         )
 
 
@@ -885,32 +898,18 @@ if page == "🧾 Sales":
             TableStyle([
 
                 (
-                "BACKGROUND",
-                (0,0),
-                (0,-1),
-                colors.HexColor("#8fd0e0")
-                ),
-
-                (
-                "TEXTCOLOR",
-                (0,0),
-                (0,-1),
-                colors.white
-                ),
-
-                (
-                "FONTNAME",
-                (0,0),
-                (0,-1),
-                "Helvetica-Bold"
-                ),
-
-                (
                 "GRID",
                 (0,0),
                 (-1,-1),
                 0.5,
                 colors.grey
+                ),
+
+                (
+                "BACKGROUND",
+                (0,0),
+                (0,-1),
+                colors.lightgrey
                 )
 
             ])
@@ -927,7 +926,8 @@ if page == "🧾 Sales":
         )
 
 
-        # -------- SERVICE TABLE --------
+
+        # SERVICE TABLE
 
 
         item_data = [
@@ -951,17 +951,20 @@ if page == "🧾 Sales":
 
         item_table = Table(
             item_data,
-            colWidths=[
-                200,
-                60,
-                80,
-                100
-            ]
+            colWidths=[200,60,80,80]
         )
 
 
         item_table.setStyle(
             TableStyle([
+
+                (
+                "GRID",
+                (0,0),
+                (-1,-1),
+                0.5,
+                colors.grey
+                ),
 
                 (
                 "BACKGROUND",
@@ -975,21 +978,6 @@ if page == "🧾 Sales":
                 (0,0),
                 (-1,0),
                 colors.white
-                ),
-
-                (
-                "FONTNAME",
-                (0,0),
-                (-1,0),
-                "Helvetica-Bold"
-                ),
-
-                (
-                "GRID",
-                (0,0),
-                (-1,-1),
-                0.5,
-                colors.grey
                 )
 
             ])
@@ -1006,35 +994,37 @@ if page == "🧾 Sales":
         )
 
 
-        # -------- TOTAL --------
 
-
-        total_data = [
-
-            [
-                "Tax",
-                f"${tax:,.2f}"
-            ],
-
-            [
-                "TOTAL",
-                f"${total:,.2f}"
-            ]
-
-        ]
+        # TOTAL
 
 
         total_table = Table(
-            total_data,
-            colWidths=[
-                300,
-                100
-            ]
+            [
+                [
+                    "Tax",
+                    f"${tax:,.2f}"
+                ],
+
+                [
+                    "TOTAL",
+                    f"${total:,.2f}"
+                ]
+
+            ],
+            colWidths=[300,120]
         )
 
 
         total_table.setStyle(
             TableStyle([
+
+                (
+                "GRID",
+                (0,0),
+                (-1,-1),
+                0.5,
+                colors.grey
+                ),
 
                 (
                 "BACKGROUND",
@@ -1048,21 +1038,6 @@ if page == "🧾 Sales":
                 (0,1),
                 (-1,1),
                 colors.white
-                ),
-
-                (
-                "FONTNAME",
-                (0,1),
-                (-1,1),
-                "Helvetica-Bold"
-                ),
-
-                (
-                "GRID",
-                (0,0),
-                (-1,-1),
-                0.5,
-                colors.grey
                 )
 
             ])
@@ -1087,39 +1062,13 @@ if page == "🧾 Sales":
         )
 
 
-doc.build(content)
+
+        doc.build(
+            content
+        )
 
 
-add_invoice(
-
-    invoice_number,
-
-    customer_name,
-
-    invoice_date,
-
-    due_date,
-
-    item_description,
-
-    quantity,
-
-    rate,
-
-    amount,
-
-    tax,
-
-    total,
-
-    payment_status,
-
-    received_date
-
-)
-
-
-buffer.seek(0)
+        buffer.seek(0)
 
 
         st.success(
@@ -1130,7 +1079,7 @@ buffer.seek(0)
         st.download_button(
             label="⬇️ Download Invoice PDF",
             data=buffer,
-            file_name=f"Prime_Accounting_Invoice_{invoice_number}.pdf",
+            file_name=f"Invoice_{invoice_number}.pdf",
             mime="application/pdf"
         )
 
