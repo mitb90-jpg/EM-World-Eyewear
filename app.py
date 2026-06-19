@@ -628,94 +628,75 @@ if page == "🧾 Sales":
 
     st.title("🧾 Sales & Invoice Management")
 
+    # -------- MULTIPLE INVOICE ITEMS --------
 
-
-
-
-    # -------- NEW / RESET INVOICE --------
-
-    if st.button("🔄 New Invoice / Refresh"):
+    if "invoice_items" not in st.session_state:
 
         st.session_state.invoice_items = []
 
-        if "invoice_number" in st.session_state:
-            del st.session_state.invoice_number
 
-        st.rerun()
-
-    # -------- MULTIPLE INVOICE ITEMS --------
-
-if "invoice_items" not in st.session_state:
-
-    st.session_state.invoice_items = []
+    st.subheader("Invoice Items")
 
 
-st.subheader("Invoice Items")
+    col1, col2, col3 = st.columns(3)
 
 
-col1, col2, col3 = st.columns(3)
+    with col1:
 
-
-with col1:
-
-    item_description = st.text_input(
-        "Description"
-    )
-
-
-with col2:
-
-    quantity = st.number_input(
-        "Quantity",
-        min_value=1,
-        value=1
-    )
-
-
-with col3:
-
-    rate = st.number_input(
-        "Rate",
-        min_value=0.0
-    )
-
-
-item_total = quantity * rate
-
-
-st.info(
-    f"Item Total: ${item_total:,.2f}"
-)
-
-
-if st.button(
-    "➕ Add Item",
-    key="add_invoice_item"
-):
-
-    if item_description.strip():
-
-        new_item = {
-            "Description": item_description,
-            "Quantity": quantity,
-            "Rate": rate,
-            "Amount": quantity * rate
-        }
-
-
-        st.session_state.invoice_items.append(
-            new_item
+        item_description = st.text_input(
+            "Description"
         )
 
 
-        st.rerun()
+    with col2:
 
-
-    else:
-
-        st.warning(
-            "Please enter description"
+        quantity = st.number_input(
+            "Quantity",
+            min_value=1,
+            value=1
         )
+
+
+    with col3:
+
+        rate = st.number_input(
+            "Rate",
+            min_value=0.0
+        )
+
+
+    item_total = quantity * rate
+
+
+    st.info(
+        f"Item Total: ${item_total:,.2f}"
+    )
+
+
+    if st.button(
+        "➕ Add Item",
+        key="add_invoice_item"
+    ):
+
+        if item_description.strip():
+
+            st.session_state.invoice_items.append(
+                {
+                    "Description": item_description,
+                    "Quantity": quantity,
+                    "Rate": rate,
+                    "Amount": item_total
+                }
+            )
+
+            st.rerun()
+
+
+        else:
+
+            st.warning(
+                "Please enter description"
+            )
 
 
     # ---------- INVOICE BASIC DETAILS ----------
