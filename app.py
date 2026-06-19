@@ -727,6 +727,14 @@ if page == "🧾 Sales":
                 }
             )
 
+
+            # clear input boxes after adding item
+
+            st.session_state.item_desc = ""
+            st.session_state.item_qty = 1
+            st.session_state.item_rate = 0.0
+
+
             st.rerun()
 
 
