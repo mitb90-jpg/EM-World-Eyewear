@@ -615,7 +615,9 @@ if page == "🧾 Sales":
 
     st.title("🧾 Sales & Invoice Management")
 
-    st.success("Create and manage customer invoices")
+    st.success(
+        "Create and manage customer invoices"
+    )
 
     st.divider()
 
@@ -655,7 +657,7 @@ if page == "🧾 Sales":
 
 
     item_description = st.text_input(
-        "Item Description"
+        "Service Description"
     )
 
 
@@ -683,7 +685,7 @@ if page == "🧾 Sales":
 
 
     st.info(
-        f"Item Amount: ${amount:,.2f}"
+        f"Service Amount: ${amount:,.2f}"
     )
 
 
@@ -696,213 +698,316 @@ if page == "🧾 Sales":
     )
 
 
-total = amount + tax
+    total = amount + tax
 
 
-st.success(
-    f"Invoice Total: ${total:,.2f}"
-)
-
-
-# -------- PAYMENT STATUS --------
-
-payment_status = st.selectbox(
-    "Payment Status",
-    [
-        "Unpaid",
-        "Paid"
-    ]
-)
-
-
-if payment_status == "Paid":
-
-    received_date = st.date_input(
-        "Payment Received Date"
-    )
-
-else:
-
-    received_date = None
-
-
-
-if st.button("🧾 Generate Invoice"):
-
-    buffer = io.BytesIO()
-
-
-    doc = SimpleDocTemplate(
-        buffer,
-        title="Invoice"
+    st.success(
+        f"Invoice Total: ${total:,.2f}"
     )
 
 
-    styles = getSampleStyleSheet()
+    # -------- PAYMENT STATUS --------
+
+    payment_status = st.selectbox(
+        "Payment Status",
+        [
+            "Unpaid",
+            "Paid"
+        ]
+    )
 
 
-    content = []
+    if payment_status == "Paid":
 
-
-    # -------- HEADER --------
-
-    content.append(
-        Paragraph(
-            "Prime Accounting and Tax",
-            styles["Title"]
+        received_date = st.date_input(
+            "Payment Received Date"
         )
-    )
+
+    else:
+
+        received_date = None
 
 
-    content.append(
-        Paragraph(
-            "<font size=14 color='#666666'>Professional Invoice</font>",
-            styles["Heading2"]
+
+    st.divider()
+
+
+
+    if st.button(
+        "🧾 Generate Invoice"
+    ):
+
+
+        buffer = io.BytesIO()
+
+
+        doc = SimpleDocTemplate(
+            buffer,
+            title="Invoice"
         )
-    )
 
 
-    content.append(
-        Spacer(1, 20)
-    )
-        # -------- INVOICE DETAILS --------
+        styles = getSampleStyleSheet()
+
+
+        content = []
+
+
+        # -------- HEADER --------
+
+
+        content.append(
+            Paragraph(
+                "<font size=22 color='#1f7189'><b>Prime Accounting and Tax</b></font>",
+                styles["Title"]
+            )
+        )
+
+
+        content.append(
+            Paragraph(
+                "<font size=14 color='#666666'>Professional Service Invoice</font>",
+                styles["Heading2"]
+            )
+        )
+
+
+        content.append(
+            Spacer(1,20)
+        )
+
+
+        # -------- CUSTOMER DETAILS --------
+
 
         invoice_info = [
+
             ["Invoice Number", invoice_number],
+
             ["Invoice Date", str(invoice_date)],
+
             ["Due Date", str(due_date)],
-            ["Customer", customer_name]
+
+            ["Bill To", customer_name],
+
+            ["Status", payment_status],
+
         ]
+
+
+        if received_date:
+
+            invoice_info.append(
+                [
+                    "Payment Received",
+                    str(received_date)
+                ]
+            )
+
 
         invoice_table = Table(
             invoice_info,
-            colWidths=[120, 300]
+            colWidths=[140,300]
         )
+
 
         invoice_table.setStyle(
             TableStyle([
-                ("BACKGROUND", (0, 0), (0, -1),
-                 colors.HexColor("#8fd0e0")),
 
-                ("TEXTCOLOR", (0, 0), (0, -1),
-                 colors.white),
+                (
+                "BACKGROUND",
+                (0,0),
+                (0,-1),
+                colors.HexColor("#8fd0e0")
+                ),
 
-                ("GRID", (0, 0), (-1, -1),
-                 1, colors.white),
+                (
+                "TEXTCOLOR",
+                (0,0),
+                (0,-1),
+                colors.white
+                ),
 
-                ("FONTNAME", (0, 0), (0, -1),
-                 "Helvetica-Bold"),
+                (
+                "FONTNAME",
+                (0,0),
+                (0,-1),
+                "Helvetica-Bold"
+                ),
 
-                ("ROWBACKGROUNDS",
-                 (1, 0), (-1, -1),
-                 [colors.whitesmoke, colors.lightgrey])
+                (
+                "GRID",
+                (0,0),
+                (-1,-1),
+                0.5,
+                colors.grey
+                )
+
             ])
         )
 
-        content.append(invoice_table)
 
         content.append(
-            Spacer(1, 20)
+            invoice_table
         )
 
-        # -------- ITEMS --------
+
+        content.append(
+            Spacer(1,20)
+        )
+
+
+        # -------- SERVICE TABLE --------
+
 
         item_data = [
+
             [
                 "Description",
-                "Quantity",
+                "Qty",
                 "Rate",
                 "Amount"
             ],
+
             [
                 item_description,
                 str(quantity),
                 f"${rate:,.2f}",
                 f"${amount:,.2f}"
             ]
+
         ]
+
 
         item_table = Table(
             item_data,
-            colWidths=[180, 80, 80, 80]
+            colWidths=[
+                200,
+                60,
+                80,
+                100
+            ]
         )
+
 
         item_table.setStyle(
             TableStyle([
-                ("BACKGROUND",
-                 (0, 0), (-1, 0),
-                 colors.HexColor("#1f7189")),
 
-                ("TEXTCOLOR",
-                 (0, 0), (-1, 0),
-                 colors.white),
+                (
+                "BACKGROUND",
+                (0,0),
+                (-1,0),
+                colors.HexColor("#1f7189")
+                ),
 
-                ("FONTNAME",
-                 (0, 0), (-1, 0),
-                 "Helvetica-Bold"),
+                (
+                "TEXTCOLOR",
+                (0,0),
+                (-1,0),
+                colors.white
+                ),
 
-                ("GRID",
-                 (0, 0), (-1, -1),
-                 1, colors.white),
+                (
+                "FONTNAME",
+                (0,0),
+                (-1,0),
+                "Helvetica-Bold"
+                ),
 
-                ("ROWBACKGROUNDS",
-                 (0, 1), (-1, -1),
-                 [
-                     colors.HexColor("#d8eef5"),
-                     colors.white
-                 ])
+                (
+                "GRID",
+                (0,0),
+                (-1,-1),
+                0.5,
+                colors.grey
+                )
+
             ])
         )
 
-        content.append(item_table)
 
         content.append(
-            Spacer(1, 20)
+            item_table
         )
+
+
+        content.append(
+            Spacer(1,20)
+        )
+
 
         # -------- TOTAL --------
 
+
         total_data = [
+
             [
                 "Tax",
                 f"${tax:,.2f}"
             ],
+
             [
                 "TOTAL",
                 f"${total:,.2f}"
             ]
+
         ]
+
 
         total_table = Table(
             total_data,
-            colWidths=[300, 100]
+            colWidths=[
+                300,
+                100
+            ]
         )
+
 
         total_table.setStyle(
             TableStyle([
-                ("GRID",
-                 (0, 0), (-1, -1),
-                 1, colors.white),
 
-                ("BACKGROUND",
-                 (0, 1), (-1, 1),
-                 colors.HexColor("#1f7189")),
+                (
+                "BACKGROUND",
+                (0,1),
+                (-1,1),
+                colors.HexColor("#1f7189")
+                ),
 
-                ("TEXTCOLOR",
-                 (0, 1), (-1, 1),
-                 colors.white),
+                (
+                "TEXTCOLOR",
+                (0,1),
+                (-1,1),
+                colors.white
+                ),
 
-                ("FONTNAME",
-                 (0, 1), (-1, 1),
-                 "Helvetica-Bold")
+                (
+                "FONTNAME",
+                (0,1),
+                (-1,1),
+                "Helvetica-Bold"
+                ),
+
+                (
+                "GRID",
+                (0,0),
+                (-1,-1),
+                0.5,
+                colors.grey
+                )
+
             ])
         )
 
-        content.append(total_table)
 
         content.append(
-            Spacer(1, 30)
+            total_table
         )
+
+
+        content.append(
+            Spacer(1,30)
+        )
+
 
         content.append(
             Paragraph(
@@ -911,7 +1016,10 @@ if st.button("🧾 Generate Invoice"):
             )
         )
 
-        doc.build(content)
+
+        doc.build(
+            content
+        )
 
 
         buffer.seek(0)
@@ -925,7 +1033,7 @@ if st.button("🧾 Generate Invoice"):
         st.download_button(
             label="⬇️ Download Invoice PDF",
             data=buffer,
-            file_name=f"World_Eyewear_{invoice_number}.pdf",
+            file_name=f"Prime_Accounting_Invoice_{invoice_number}.pdf",
             mime="application/pdf"
         )
 
