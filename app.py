@@ -799,6 +799,136 @@ with col2:
 
     st.divider()
 
+    # ================= INVOICE HISTORY =================
+
+
+if page == "📄 Invoice History":
+
+
+    st.title(
+        "📄 Invoice History"
+    )
+
+
+    invoices = get_invoices()
+
+
+    if invoices:
+
+
+        invoice_df = pd.DataFrame(
+            invoices
+        )
+
+
+        st.dataframe(
+            invoice_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+
+        st.divider()
+
+
+        st.subheader(
+            "Delete Invoice"
+        )
+
+
+        invoice_numbers = [
+            row["invoice_number"]
+            for row in invoices
+        ]
+
+
+        selected_invoice = st.selectbox(
+            "Select Invoice",
+            ["Select Invoice"] + invoice_numbers
+        )
+
+
+        if "confirm_invoice_delete" not in st.session_state:
+
+            st.session_state.confirm_invoice_delete = False
+
+
+
+        if st.button(
+            "🗑️ Delete Invoice"
+        ):
+
+
+            if selected_invoice != "Select Invoice":
+
+                st.session_state.confirm_invoice_delete = True
+
+
+            else:
+
+                st.warning(
+                    "Please select an invoice"
+                )
+
+
+
+        if st.session_state.confirm_invoice_delete:
+
+
+            st.warning(
+                f"⚠️ Are you sure you want to delete invoice {selected_invoice}?"
+            )
+
+
+            c1, c2 = st.columns(2)
+
+
+            with c1:
+
+                if st.button(
+                    "✅ Yes, Delete"
+                ):
+
+
+                    delete_invoice(
+                        selected_invoice
+                    )
+
+
+                    st.session_state.confirm_invoice_delete = False
+
+
+                    st.success(
+                        "Invoice deleted successfully"
+                    )
+
+
+                    st.rerun()
+
+
+
+            with c2:
+
+                if st.button(
+                    "❌ Cancel"
+                ):
+
+
+                    st.session_state.confirm_invoice_delete = False
+
+
+                    st.rerun()
+
+
+
+    else:
+
+
+        st.info(
+            "No invoices created yet"
+        )
+
+
 
     # -------- PAYMENT STATUS --------
 
@@ -1280,134 +1410,6 @@ with col2:
             mime="application/pdf"
         )
 
-# ================= INVOICE HISTORY =================
-
-
-if page == "📄 Invoice History":
-
-
-    st.title(
-        "📄 Invoice History"
-    )
-
-
-    invoices = get_invoices()
-
-
-    if invoices:
-
-
-        invoice_df = pd.DataFrame(
-            invoices
-        )
-
-
-        st.dataframe(
-            invoice_df,
-            use_container_width=True,
-            hide_index=True
-        )
-
-
-        st.divider()
-
-
-        st.subheader(
-            "Delete Invoice"
-        )
-
-
-        invoice_numbers = [
-            row["invoice_number"]
-            for row in invoices
-        ]
-
-
-        selected_invoice = st.selectbox(
-            "Select Invoice",
-            ["Select Invoice"] + invoice_numbers
-        )
-
-
-        if "confirm_invoice_delete" not in st.session_state:
-
-            st.session_state.confirm_invoice_delete = False
-
-
-
-        if st.button(
-            "🗑️ Delete Invoice"
-        ):
-
-
-            if selected_invoice != "Select Invoice":
-
-                st.session_state.confirm_invoice_delete = True
-
-
-            else:
-
-                st.warning(
-                    "Please select an invoice"
-                )
-
-
-
-        if st.session_state.confirm_invoice_delete:
-
-
-            st.warning(
-                f"⚠️ Are you sure you want to delete invoice {selected_invoice}?"
-            )
-
-
-            c1, c2 = st.columns(2)
-
-
-            with c1:
-
-                if st.button(
-                    "✅ Yes, Delete"
-                ):
-
-
-                    delete_invoice(
-                        selected_invoice
-                    )
-
-
-                    st.session_state.confirm_invoice_delete = False
-
-
-                    st.success(
-                        "Invoice deleted successfully"
-                    )
-
-
-                    st.rerun()
-
-
-
-            with c2:
-
-                if st.button(
-                    "❌ Cancel"
-                ):
-
-
-                    st.session_state.confirm_invoice_delete = False
-
-
-                    st.rerun()
-
-
-
-    else:
-
-
-        st.info(
-            "No invoices created yet"
-        )
 
 # ================= MAIN =================
 
