@@ -628,7 +628,7 @@ if page == "🧾 Sales":
     st.title("🧾 Sales & Invoice Management")
 
 
-# ---------- INVOICE BASIC DETAILS ----------
+    # ---------- INVOICE BASIC DETAILS ----------
 
     col1, col2 = st.columns(2)
 
@@ -647,7 +647,6 @@ if page == "🧾 Sales":
             "Invoice Date",
             format="DD-MMMM-YYYY"
         )
-
 
 
     col3, col4 = st.columns(2)
