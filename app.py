@@ -2297,7 +2297,7 @@ elif page == "🏠 Dashboard":
 
     st.write("")
 
-    st.divider()
+    st.divider()  
 
 
     st.subheader("🚀 Quick Actions")
@@ -2319,11 +2319,10 @@ elif page == "🏠 Dashboard":
             st.rerun()
 
 
-    with c:
-        st.button(
-            "📄 Unpaid Invoices",
-            use_container_width=True
-        )
+    with b:
+        if st.button("📄 Create Invoice", use_container_width=True):
+            st.session_state.page = "📄 Create Invoice"
+            st.rerun()
 
 
     st.divider()
