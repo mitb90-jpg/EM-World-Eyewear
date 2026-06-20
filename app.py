@@ -5,6 +5,7 @@ import re
 import json
 import os
 import datetime
+import plotly.graph_objects as go
 
 from supabase import create_client, Client
 
@@ -2413,6 +2414,43 @@ elif page == "🏠 Dashboard":
         if st.button("🧾 Create Invoice", use_container_width=True):
             st.session_state.page = "🧾 Sales"
             st.rerun()
+
+
+    st.divider()
+
+    st.subheader("📊 Paid vs Unpaid")
+
+    paid_total = sum(
+        inv["total"] for inv in dashboard_invoices
+        if inv["payment_status"] == "Paid"
+    )
+
+    unpaid_total_chart = sum(
+        inv["total"] for inv in dashboard_invoices
+        if inv["payment_status"] == "Unpaid"
+    )
+
+    if paid_total > 0 or unpaid_total_chart > 0:
+
+        fig = go.Figure(data=[
+            go.Pie(
+                labels=["Paid", "Unpaid"],
+                values=[paid_total, unpaid_total_chart],
+                hole=0.5,
+                marker=dict(colors=["#3a8fa3", "#d97b66"])
+            )
+        ])
+
+        fig.update_layout(
+            height=300,
+            margin=dict(t=10, b=10, l=10, r=10)
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+    else:
+
+        st.info("No invoice data yet to display chart")
 
 
     st.divider()
