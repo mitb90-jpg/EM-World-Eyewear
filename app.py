@@ -498,12 +498,30 @@ if page == "👥 Clients":
         "Contact Number"
     )
 
+    st.markdown("**Account Details (optional)**")
+
+    new_account_name = st.text_input(
+        "Account Name",
+        placeholder="Example: Scotia Bank",
+        key="new_client_account_name"
+    )
+
+    new_account_type = st.selectbox(
+        "Account Type",
+        ["Bank Account", "Credit Card"],
+        key="new_client_account_type"
+    )
+
 
     if st.button("➕ Add Client"):
 
         if client_name.strip():
 
             add_client(client_name, client_address, client_contact)
+
+            if new_account_name.strip():
+
+                add_account(client_name, new_account_name, new_account_type)
 
             st.success(
                 "Client Added Successfully"
