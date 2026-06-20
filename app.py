@@ -442,7 +442,20 @@ section[data-testid="stSidebar"] * {
 }
 section[data-testid="stSidebar"] .stRadio label {
     font-size: 16px;
-    padding: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+section[data-testid="stSidebar"] .stRadio label[data-checked="true"] {
+    background-color: white;
+    color: #1f4e79 !important;
+}
+
+section[data-testid="stSidebar"] .stRadio label[data-checked="true"] p {
+    color: #1f4e79 !important;
+    font-weight: bold;
 }
 </style>
 """, unsafe_allow_html=True)
