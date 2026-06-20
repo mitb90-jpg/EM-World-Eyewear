@@ -2323,18 +2323,13 @@ elif page == "🏠 Dashboard":
 
         st.markdown(
             """
-            <div class="card">
-
             <div class="card card-amber">
-
             <div class="card-title">
             📌 Unpaid Invoices
             </div>
-
             <div class="card-number">
             {}
             </div>
-
             </div>
             """.format(dashboard_unpaid_count),
             unsafe_allow_html=True
