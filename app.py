@@ -822,7 +822,12 @@ if page == "👥 Clients":
 
             client_df = pd.DataFrame(all_clients_data)
 
-            client_df = client_df.rename(columns={"id": "Client ID"})
+            client_df = client_df.rename(columns={
+                "id": "Client ID",
+                "client_name": "Client Name",
+                "address": "Address",
+                "contact_number": "Contact Number"
+            })
 
             client_df.insert(0, "Sr. No", range(1, len(client_df) + 1))
 
