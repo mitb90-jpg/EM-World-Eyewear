@@ -498,288 +498,250 @@ if page == "👥 Clients":
 
     st.title("👥 Client Management")
 
-
-    st.subheader("Add New Client")
-
-    client_name = st.text_input(
-        "Client Name"
-    )
-
-    client_address = st.text_input(
-        "Address"
-    )
-
-    client_contact = st.text_input(
-        "Contact Number"
-    )
-
-    st.markdown("**Account Details (optional)**")
-
-    new_account_name = st.text_input(
-        "Account Name",
-        placeholder="Example: Scotia Bank",
-        key="new_client_account_name"
-    )
-
-    new_account_type = st.selectbox(
-        "Account Type",
-        ["Bank Account", "Credit Card"],
-        key="new_client_account_type"
+    tab1, tab2, tab3 = st.tabs(
+        ["📋 All Clients", "➕ Add Client", "👤 Client Profile"]
     )
 
 
-    if st.button("➕ Add Client"):
+    with tab2:
 
-        if client_name.strip():
+        st.subheader("Add New Client")
 
-            add_client(client_name, client_address, client_contact)
+        client_name = st.text_input(
+            "Client Name"
+        )
 
-            if new_account_name.strip():
+        client_address = st.text_input(
+            "Address"
+        )
 
-                add_account(client_name, new_account_name, new_account_type)
+        client_contact = st.text_input(
+            "Contact Number"
+        )
 
-            st.success(
-                "Client Added Successfully"
+        st.markdown("**Account Details (optional)**")
+
+        new_account_name = st.text_input(
+            "Account Name",
+            placeholder="Example: Scotia Bank",
+            key="new_client_account_name"
+        )
+
+        new_account_type = st.selectbox(
+            "Account Type",
+            ["Bank Account", "Credit Card"],
+            key="new_client_account_type"
+        )
+
+
+        if st.button("➕ Add Client"):
+
+            if client_name.strip():
+
+                add_client(client_name, client_address, client_contact)
+
+                if new_account_name.strip():
+
+                    add_account(client_name, new_account_name, new_account_type)
+
+                st.success(
+                    "Client Added Successfully"
+                )
+
+                st.rerun()
+
+
+
+    st.divider()
+
+
+    with tab1:
+
+        st.subheader("Existing Clients")
+
+        clients = get_clients()
+
+        if clients:
+
+            all_clients_data = (
+                supabase
+                .table("clients")
+                .select("*")
+                .order("client_name")
+                .execute()
+            ).data
+
+            client_df = pd.DataFrame(all_clients_data)
+
+            st.dataframe(
+                client_df,
+                use_container_width=True,
+                hide_index=True
             )
 
-            st.rerun()
+            client_excel = io.BytesIO()
 
+            with pd.ExcelWriter(client_excel, engine="openpyxl") as writer:
+                client_df.to_excel(writer, index=False, sheet_name="Clients")
 
+            client_excel.seek(0)
 
-    st.divider()
+            st.download_button(
+                "⬇️ Export Clients Database",
+                data=client_excel,
+                file_name="Clients_Database.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
+        else:
 
-    st.subheader("Existing Clients")
+            st.info(
+                "No clients added yet"
+            )
 
+        st.divider()
 
-    clients = get_clients()
+        st.subheader("Delete Client")
 
+        if clients:
 
-    if clients:
+            delete_client_name = st.selectbox(
+                "Select Client",
+                options=["Select Client"] + clients,
+                index=0,
+                key="delete_client_dropdown"
+            )
 
-        all_clients_data = (
-            supabase
-            .table("clients")
-            .select("*")
-            .order("client_name")
-            .execute()
-        ).data
+            if "confirm_delete" not in st.session_state:
+                st.session_state.confirm_delete = False
 
-        client_df = pd.DataFrame(all_clients_data)
+            if st.button("🗑️ Delete Client"):
 
-        st.dataframe(
-            client_df,
-            use_container_width=True,
-            hide_index=True
-        )
+                if delete_client_name != "Select Client":
+                    st.session_state.confirm_delete = True
+                else:
+                    st.warning("Please select a client first")
 
-        client_excel = io.BytesIO()
-
-        with pd.ExcelWriter(client_excel, engine="openpyxl") as writer:
-            client_df.to_excel(writer, index=False, sheet_name="Clients")
-
-        client_excel.seek(0)
-
-        st.download_button(
-            "⬇️ Export Clients Database",
-            data=client_excel,
-            file_name="Clients_Database.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-
-    else:
-
-        st.info(
-            "No clients added yet"
-        )
-
-
-    st.divider()
-
-
-    st.subheader("Delete Client")
-
-
-    if clients:
-
-        delete_client_name = st.selectbox(
-            "Select Client",
-            options=["Select Client"] + clients,
-            index=0,
-            key="delete_client_dropdown"
-        )
-
-
-        # DELETE CONFIRMATION
-
-        if "confirm_delete" not in st.session_state:
-
-            st.session_state.confirm_delete = False
-
-
-
-        if st.button("🗑️ Delete Client"):
-
-
-            if delete_client_name != "Select Client":
-
-                st.session_state.confirm_delete = True
-
-
-            else:
+            if st.session_state.confirm_delete:
 
                 st.warning(
-                    "Please select a client first"
+                    f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
                 )
 
+                c1, c2 = st.columns(2)
 
+                with c1:
+                    if st.button("✅ Yes, Delete"):
+                        delete_client(delete_client_name)
+                        st.session_state.confirm_delete = False
+                        st.success("Client Deleted")
+                        st.rerun()
 
-        if st.session_state.confirm_delete:
+                with c2:
+                    if st.button("❌ Cancel"):
+                        st.session_state.confirm_delete = False
+                        st.rerun()
 
+        else:
 
-            st.warning(
-                f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
+            st.info(
+                "No clients available to delete"
             )
 
+    with tab3:
 
-            c1, c2 = st.columns(2)
+        st.subheader("👤 Client Profile")
 
+        if clients:
 
-            with c1:
+            profile_client = st.selectbox(
+                "Select Client to View Profile",
+                ["Select Client"] + clients,
+                key="profile_client_select"
+            )
 
-                if st.button("✅ Yes, Delete"):
+            if profile_client != "Select Client":
 
+                details = get_client_details(profile_client)
 
-                    delete_client(delete_client_name)
+                st.write(f"**Name:** {details['client_name']}")
+                st.write(f"**Address:** {details.get('address', '')}")
+                st.write(f"**Contact Number:** {details.get('contact_number', '')}")
 
+                with st.expander("✏️ Edit Client Details"):
 
-                    st.session_state.confirm_delete = False
-
-
-                    st.success(
-                        "Client Deleted"
+                    edit_name = st.text_input(
+                        "Client Name",
+                        value=details['client_name'],
+                        key="edit_client_name"
                     )
 
-
-                    st.rerun()
-
-
-
-            with c2:
-
-                if st.button("❌ Cancel"):
-
-
-                    st.session_state.confirm_delete = False
-
-
-                    st.rerun()
-
-
-
-    else:
-
-        st.info(
-            "No clients available to delete"
-        )
-
-    st.divider()
-
-    st.subheader("📋 Client Profile")
-
-    if clients:
-
-        profile_client = st.selectbox(
-            "Select Client to View Profile",
-            ["Select Client"] + clients,
-            key="profile_client_select"
-        )
-
-    if profile_client != "Select Client":
-
-            details = get_client_details(profile_client)
-
-            st.write(f"**Name:** {details['client_name']}")
-            st.write(f"**Address:** {details.get('address', '')}")
-            st.write(f"**Contact Number:** {details.get('contact_number', '')}")
-
-            with st.expander("✏️ Edit Client Details"):
-
-                edit_name = st.text_input(
-                    "Client Name",
-                    value=details['client_name'],
-                    key="edit_client_name"
-                )
-
-                edit_address = st.text_input(
-                    "Address",
-                    value=details.get('address', ''),
-                    key="edit_client_address"
-                )
-
-                edit_contact = st.text_input(
-                    "Contact Number",
-                    value=details.get('contact_number', ''),
-                    key="edit_client_contact"
-                )
-
-                if st.button("💾 Save Changes", key="save_client_edit"):
-
-                    update_client(
-                        profile_client,
-                        edit_name,
-                        edit_address,
-                        edit_contact
+                    edit_address = st.text_input(
+                        "Address",
+                        value=details.get('address', ''),
+                        key="edit_client_address"
                     )
 
-                    st.success("Client Updated Successfully")
+                    edit_contact = st.text_input(
+                        "Contact Number",
+                        value=details.get('contact_number', ''),
+                        key="edit_client_contact"
+                    )
 
-                    st.rerun()
+                    if st.button("💾 Save Changes", key="save_client_edit"):
 
-            st.divider()
+                        update_client(
+                            profile_client,
+                            edit_name,
+                            edit_address,
+                            edit_contact
+                        )
 
-            st.subheader("🏦 Accounts")
+                        st.success("Client Updated Successfully")
 
-            account_name = st.text_input(
-                "Account Name",
-                placeholder="Example: Scotia Bank",
-                key="profile_account_name"
-            )
+                        st.rerun()
 
-            account_type = st.selectbox(
-                "Account Type",
-                ["Bank Account", "Credit Card"],
-                key="profile_account_type"
-            )
+                st.divider()
 
-            if st.button("➕ Add Account", key="profile_add_account"):
+                st.subheader("🏦 Accounts")
 
-                if account_name.strip():
-
-                    add_account(profile_client, account_name, account_type)
-
-                    st.success("Account Added Successfully")
-
-                    st.rerun()
-
-            accounts = get_accounts(profile_client)
-
-            if accounts:
-
-                account_df = pd.DataFrame(
-                    accounts,
-                    columns=["Account Name", "Account Type"]
+                account_name = st.text_input(
+                    "Account Name",
+                    placeholder="Example: Scotia Bank",
+                    key="profile_account_name"
                 )
 
-                st.dataframe(
-                    account_df,
-                    use_container_width=True,
-                    hide_index=True
+                account_type = st.selectbox(
+                    "Account Type",
+                    ["Bank Account", "Credit Card"],
+                    key="profile_account_type"
                 )
 
-            else:
+                if st.button("➕ Add Account", key="profile_add_account"):
 
-                st.info("No accounts added for this client")
+                    if account_name.strip():
+                        add_account(profile_client, account_name, account_type)
+                        st.success("Account Added Successfully")
+                        st.rerun()
+
+                accounts = get_accounts(profile_client)
+
+                if accounts:
+
+                    account_df = pd.DataFrame(
+                        accounts,
+                        columns=["Account Name", "Account Type"]
+                    )
+
+                    st.dataframe(
+                        account_df,
+                        use_container_width=True,
+                        hide_index=True
+                    )
+
+                else:
+
+                    st.info("No accounts added for this client")
 
 
 # ================= SALES PAGE =================
