@@ -51,7 +51,7 @@ def add_client(name, address, contact_number):
 
 
 
-def update_client(old_name, new_name, address, contact_number):
+def update_client(client_id, new_name, address, contact_number):
 
     supabase.table("clients") \
         .update(
@@ -61,7 +61,7 @@ def update_client(old_name, new_name, address, contact_number):
                 "contact_number": contact_number
             }
         ) \
-        .eq("client_name", old_name) \
+        .eq("id", client_id) \
         .execute()
 
 
@@ -71,15 +71,12 @@ def get_clients():
     response = (
         supabase
         .table("clients")
-        .select("client_name")
+        .select("id, client_name")
         .order("client_name")
         .execute()
     )
 
-    return [
-        row["client_name"]
-        for row in response.data
-    ]
+    return response.data
 
 
 def get_client_details(client_name):
@@ -89,6 +86,18 @@ def get_client_details(client_name):
         .table("clients")
         .select("*")
         .eq("client_name", client_name)
+        .execute()
+    )
+
+    return response.data[0] if response.data else None
+
+def get_client_details_by_id(client_id):
+
+    response = (
+        supabase
+        .table("clients")
+        .select("*")
+        .eq("id", client_id)
         .execute()
     )
 
@@ -457,13 +466,13 @@ def get_invoices():
     return response.data
 
 
-def delete_client(name):
+def delete_client(client_id):
 
     supabase.table("clients") \
         .delete() \
         .eq(
-            "client_name",
-            name
+            "id",
+            client_id
         ) \
         .execute()
 
@@ -708,6 +717,14 @@ if page == "👥 Clients":
 
     clients = get_clients()
 
+    client_labels = [
+        f"{c['client_name']} (ID: {c['id']})"
+        for c in clients
+    ]
+
+    def get_client_id_from_label(label):
+        return int(label.split("ID: ")[1].rstrip(")"))
+
     if st.session_state.clients_active_tab == "Add Client":
 
         st.subheader("Add New Client")
@@ -841,9 +858,9 @@ if page == "👥 Clients":
 
         if clients:
 
-            delete_client_name = st.selectbox(
+            delete_client_label = st.selectbox(
                 "Select Client",
-                options=["Select Client"] + clients,
+                options=["Select Client"] + client_labels,
                 index=0,
                 key="delete_client_dropdown"
             )
@@ -853,7 +870,7 @@ if page == "👥 Clients":
 
             if st.button("🗑️ Delete Client"):
 
-                if delete_client_name != "Select Client":
+                if delete_client_label != "Select Client":
                     st.session_state.confirm_delete = True
                 else:
                     st.warning("Please select a client first")
@@ -861,14 +878,15 @@ if page == "👥 Clients":
             if st.session_state.confirm_delete:
 
                 st.warning(
-                    f"⚠️ Are you sure you want to delete '{delete_client_name}'?"
+                    f"⚠️ Are you sure you want to delete '{delete_client_label}'?"
                 )
 
                 c1, c2 = st.columns(2)
 
                 with c1:
                     if st.button("✅ Yes, Delete"):
-                        delete_client(delete_client_name)
+                        delete_id = get_client_id_from_label(delete_client_label)
+                        delete_client(delete_id)
                         st.session_state.confirm_delete = False
                         st.success("Client Deleted")
                         st.rerun()
@@ -890,15 +908,17 @@ if page == "👥 Clients":
 
         if clients:
 
-            profile_client = st.selectbox(
+            profile_client_label = st.selectbox(
                 "Select Client to View Profile",
-                ["Select Client"] + clients,
+                ["Select Client"] + client_labels,
                 key="profile_client_select"
             )
 
-            if profile_client != "Select Client":
+            if profile_client_label != "Select Client":
 
-                details = get_client_details(profile_client)
+                profile_client_id = get_client_id_from_label(profile_client_label)
+
+                details = get_client_details_by_id(profile_client_id)
 
                 st.write(f"**Name:** {details['client_name']}")
                 st.write(f"**Address:** {details.get('address', '')}")
@@ -927,7 +947,7 @@ if page == "👥 Clients":
                     if st.button("💾 Save Changes", key="save_client_edit"):
 
                         update_client(
-                            profile_client,
+                            profile_client_id,
                             edit_name,
                             edit_address,
                             edit_contact
@@ -956,7 +976,7 @@ if page == "👥 Clients":
                 if st.button("➕ Add Account", key="profile_add_account"):
 
                     if account_name.strip():
-                        add_account(details["id"], profile_client, account_name, account_type)
+                        add_account(details["id"], details['client_name'], account_name, account_type)
                         st.success("Account Added Successfully")
                         st.rerun()
 
@@ -993,9 +1013,22 @@ if page == "🧾 Sales":
 
     with col1:
 
-        customer_name = st.selectbox(
+        sales_clients = get_clients()
+
+        sales_client_labels = [
+            f"{c['client_name']} (ID: {c['id']})"
+            for c in sales_clients
+        ]
+
+        customer_label = st.selectbox(
             "Customer",
-            ["Select Client"] + get_clients()
+            ["Select Client"] + sales_client_labels
+        )
+
+        customer_name = (
+            customer_label.split(" (ID:")[0]
+            if customer_label != "Select Client"
+            else "Select Client"
         )
 
     with col2:
