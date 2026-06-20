@@ -463,15 +463,14 @@ section[data-testid="stSidebar"] .stRadio label[data-checked="true"] p {
 """, unsafe_allow_html=True)
 
 section[data-testid="stSidebar"] .stRadio input[type="radio"] {
-    display: none;
-}
-
-section[data-testid="stSidebar"] .stRadio > div {
-    gap: 4px;
+    opacity: 0;
+    position: absolute;
 }
 
 section[data-testid="stSidebar"] .stRadio label {
     cursor: pointer;
+    position: relative;
+    padding-left: 14px;
 }
 
 # ---------------- HEADER ----------------
