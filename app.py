@@ -282,7 +282,7 @@ def generate_invoice_pdf(invoice_number):
         ),
     ]]
 
-    contact_table = Table(contact_data, colWidths=[260, 250])
+    contact_table = Table(contact_data, colWidths=[330, 180])
     contact_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, -1), TEAL),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
