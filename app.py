@@ -2268,23 +2268,6 @@ elif page == "🏠 Dashboard":
     """, unsafe_allow_html=True)
 
 
-    st.markdown(
-        """
-        <div class="main-title">
-        📊 Prime Accounting Dashboard
-        </div>
-
-        <div class="sub-title">
-        Smart accounting automation platform
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-    st.write("")
-
-
     st.write("")
 
 
