@@ -797,19 +797,56 @@ if page == "🧾 Sales":
 
     st.title("🧾 Sales & Invoice Management")
 
+    # ---------- INVOICE BASIC DETAILS ----------
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        customer_name = st.selectbox(
+            "Customer",
+            ["Select Client"] + get_clients()
+        )
+
+    with col2:
+
+        invoice_date = st.date_input(
+            "Invoice Date",
+            format="DD-MM-YYYY"
+        )
+
+    col3, col4 = st.columns(2)
+
+    with col3:
+
+        if "current_invoice_number" not in st.session_state:
+            st.session_state.current_invoice_number = generate_invoice_number()
+
+        invoice_number = st.session_state.current_invoice_number
+
+        st.text_input(
+            "Invoice Number",
+            value=invoice_number,
+            disabled=True
+        )
+
+    with col4:
+
+        due_date = st.date_input(
+            "Due Date",
+            format="DD-MM-YYYY"
+        )
+
+    st.divider()
 
     # -------- MULTIPLE INVOICE ITEMS --------
 
     if "invoice_items" not in st.session_state:
-
         st.session_state.invoice_items = []
-
 
     st.subheader("Invoice Items")
 
-
     col1, col2, col3 = st.columns(3)
-
 
     with col1:
 
@@ -817,7 +854,6 @@ if page == "🧾 Sales":
             "Description",
             key="item_description"
         )
-
 
     with col2:
 
@@ -828,7 +864,6 @@ if page == "🧾 Sales":
             key="invoice_quantity"
         )
 
-
     with col3:
 
         rate = st.number_input(
@@ -837,14 +872,11 @@ if page == "🧾 Sales":
             key="invoice_rate"
         )
 
-
     item_total = quantity * rate
-
 
     st.info(
         f"Item Total: ${item_total:,.2f}"
     )
-
 
     if st.button(
         "➕ Add Item",
@@ -864,7 +896,6 @@ if page == "🧾 Sales":
 
             st.rerun()
 
-
         else:
 
             st.warning(
@@ -872,59 +903,7 @@ if page == "🧾 Sales":
             )
 
 
-    # ---------- INVOICE BASIC DETAILS ----------
-
-    col1, col2 = st.columns(2)
-
-
-    with col1:
-
-        customer_name = st.selectbox(
-            "Customer",
-            ["Select Client"] + get_clients()
-        )
-
-
-    with col2:
-
-        invoice_date = st.date_input(
-            "Invoice Date",
-            format="DD-MM-YYYY"
-        )
-
-
-    col3, col4 = st.columns(2)
-
-
-    with col3:
-
-        if "current_invoice_number" not in st.session_state:
-
-            st.session_state.current_invoice_number = generate_invoice_number()
-
-
-        invoice_number = st.session_state.current_invoice_number
-
-
-        st.text_input(
-            "Invoice Number",
-            value=invoice_number,
-            disabled=True
-        )
-
-
-    with col4:
-
-        due_date = st.date_input(
-            "Due Date",
-            format="DD-MM-YYYY"
-        )
-
-
-    st.divider()
-
-
-           
+          
     # -------- DISPLAY / EDIT ITEMS --------
 
     if st.session_state.invoice_items:
