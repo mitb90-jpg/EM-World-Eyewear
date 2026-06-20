@@ -481,6 +481,27 @@ page = st.sidebar.radio(
     ]
 )
 
+st.sidebar.markdown("---")
+
+total_clients = len(get_clients())
+
+all_invoices = get_invoices()
+
+unpaid_count = len([
+    inv for inv in all_invoices
+    if inv["payment_status"] == "Unpaid"
+])
+
+st.sidebar.markdown(
+    f"""
+    <div style="font-size:14px; line-height:1.8;">
+    👥 <b>Total Clients:</b> {total_clients}<br>
+    📌 <b>Unpaid Invoices:</b> {unpaid_count}
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 # ================= CLIENT PAGE =================
 
 if page == "👥 Clients":
