@@ -746,7 +746,7 @@ if page == "👥 Clients":
         )
 
         client_contact = st.text_input(
-            "Contact Number"
+            "Business Number"
         )
 
         st.markdown("**Account Details (optional)**")
