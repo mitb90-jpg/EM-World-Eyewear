@@ -677,19 +677,19 @@ if page == "👥 Clients":
                     edit_name = st.text_input(
                         "Client Name",
                         value=details['client_name'],
-                        key="edit_client_name"
+                        key=f"edit_client_name_{details['id']}"
                     )
 
                     edit_address = st.text_input(
                         "Address",
                         value=details.get('address', ''),
-                        key="edit_client_address"
+                        key=f"edit_client_address_{details['id']}"
                     )
 
                     edit_contact = st.text_input(
                         "Contact Number",
                         value=details.get('contact_number', ''),
-                        key="edit_client_contact"
+                        key=f"edit_client_contact_{details['id']}"
                     )
 
                     if st.button("💾 Save Changes", key="save_client_edit"):
