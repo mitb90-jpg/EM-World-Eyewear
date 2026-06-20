@@ -249,7 +249,7 @@ def generate_invoice_pdf(invoice_number):
 
     banner_data = [[
         Paragraph(
-            "<font size=20 color='white'><b>Prime Accounting and Tax</font>",
+            "<font size=20 color='white'><b>Prime Accounting</b> and Tax</font>",
             styles["Normal"]
         ),
         logo
