@@ -435,22 +435,24 @@ div.stButton > button:hover {
     background-color: #163a5c;
 }
 section[data-testid="stSidebar"] {
-    background-color: #1f4e79;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
 }
+
 section[data-testid="stSidebar"] * {
-    color: white;
+    color: #333333;
 }
+
 section[data-testid="stSidebar"] .stRadio label {
     font-size: 16px;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-radius: 8px;
     margin-bottom: 4px;
     display: block;
 }
 
 section[data-testid="stSidebar"] .stRadio label[data-checked="true"] {
-    background-color: white;
-    color: #1f4e79 !important;
+    background-color: #eaf1fb;
 }
 
 section[data-testid="stSidebar"] .stRadio label[data-checked="true"] p {
