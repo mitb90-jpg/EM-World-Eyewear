@@ -172,6 +172,19 @@ def add_invoice(
     ).execute()
 
 
+def mark_invoice_paid(invoice_number, received_date):
+
+    supabase.table("invoices") \
+        .update(
+            {
+                "payment_status": "Paid",
+                "received_date": str(received_date)
+            }
+        ) \
+        .eq("invoice_number", invoice_number) \
+        .execute()
+
+
 def add_invoice_items(invoice_number, items):
 
     for item in items:
@@ -1396,6 +1409,35 @@ if page == "🧾 Sales":
             use_container_width=True,
             hide_index=True
         )
+
+
+        st.markdown("**Mark Invoice as Paid**")
+
+        unpaid_numbers = [
+            inv["invoice_number"]
+            for inv in unpaid_invoices
+        ]
+
+        mark_paid_invoice = st.selectbox(
+            "Select Invoice",
+            ["Select Invoice"] + unpaid_numbers,
+            key="mark_paid_select"
+        )
+
+        if mark_paid_invoice != "Select Invoice":
+
+            payment_received_date = st.date_input(
+                "Payment Received Date",
+                key="mark_paid_date"
+            )
+
+            if st.button("✅ Mark as Paid", key="mark_paid_button"):
+
+                mark_invoice_paid(mark_paid_invoice, payment_received_date)
+
+                st.success("Invoice marked as Paid")
+
+                st.rerun()
 
 
     else:
