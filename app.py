@@ -39,13 +39,15 @@ supabase: Client = create_client(
 
 def add_client(name, address, contact_number):
 
-    supabase.table("clients").insert(
+    response = supabase.table("clients").insert(
         {
             "client_name": name,
             "address": address,
             "contact_number": contact_number
         }
     ).execute()
+
+    return response.data[0]["id"]
 
 
 
@@ -324,6 +326,7 @@ def delete_invoice(invoice_number):
 
 
 def add_account(
+    client_id,
     client_name,
     account_name,
     account_type
@@ -331,6 +334,7 @@ def add_account(
 
     supabase.table("accounts").insert(
         {
+            "client_id": client_id,
             "client_name": client_name,
             "account_name": account_name,
             "account_type": account_type
@@ -339,7 +343,7 @@ def add_account(
 
 
 
-def get_accounts(client_name):
+def get_accounts(client_id):
 
     response = (
         supabase
@@ -348,8 +352,8 @@ def get_accounts(client_name):
             "account_name, account_type"
         )
         .eq(
-            "client_name",
-            client_name
+            "client_id",
+            client_id
         )
         .execute()
     )
@@ -538,11 +542,11 @@ if page == "👥 Clients":
 
             if client_name.strip():
 
-                add_client(client_name, client_address, client_contact)
+                new_client_id = add_client(client_name, client_address, client_contact)
 
                 if new_account_name.strip():
 
-                    add_account(client_name, new_account_name, new_account_type)
+                    add_account(new_client_id, client_name, new_account_name, new_account_type)
 
                 st.success(
                     "Client Added Successfully"
@@ -720,11 +724,11 @@ if page == "👥 Clients":
                 if st.button("➕ Add Account", key="profile_add_account"):
 
                     if account_name.strip():
-                        add_account(profile_client, account_name, account_type)
+                        add_account(details["id"], profile_client, account_name, account_type)
                         st.success("Account Added Successfully")
                         st.rerun()
 
-                accounts = get_accounts(profile_client)
+                accounts = get_accounts(details["id"])
 
                 if accounts:
 
