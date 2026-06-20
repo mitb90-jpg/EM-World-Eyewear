@@ -103,21 +103,24 @@ import datetime
 def generate_invoice_number():
 
     today = datetime.date.today()
-
     prefix = f"INV-{today.strftime('%Y%m%d')}"
 
     response = (
         supabase
         .table("invoices")
         .select("invoice_number")
-        .like(
-            "invoice_number",
-            f"{prefix}%"
-        )
+        .like("invoice_number", f"{prefix}%")
+        .order("invoice_number", desc=True)
+        .limit(1)
         .execute()
     )
 
-    count = len(response.data) + 1
+    if response.data:
+        last_number = response.data[0]["invoice_number"]
+        last_count = int(last_number.split("-")[-1])
+        count = last_count + 1
+    else:
+        count = 1
 
     return f"{prefix}-{count:04d}"
 
