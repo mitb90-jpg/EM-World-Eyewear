@@ -481,16 +481,22 @@ st.sidebar.markdown("---")
 
 # ---------------- APP MENU ----------------
 st.sidebar.markdown("---")
-page = st.sidebar.radio(
-    "📋 Navigation",
-    [
-        "🏠 Dashboard",
-        "👥 Clients",        
-        "🧾 Sales",
-        "📄 Invoice History",
-        "📊 Reports"
-    ]
-)
+if "page" not in st.session_state:
+    st.session_state.page = "🏠 Dashboard"
+
+nav_items = [
+    "🏠 Dashboard",
+    "👥 Clients",
+    "🧾 Sales",
+    "📄 Invoice History",
+    "📊 Reports"
+]
+
+for item in nav_items:
+    if st.sidebar.button(item, key=f"nav_{item}", use_container_width=True):
+        st.session_state.page = item
+
+page = st.session_state.page
 
 st.sidebar.markdown("---")
 
