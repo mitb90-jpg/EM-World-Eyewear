@@ -103,7 +103,7 @@ import datetime
 def generate_invoice_number():
 
     today = datetime.date.today()
-    prefix = f"INV-{today.strftime('%Y%m%d')}"
+    prefix = f"INV-PAT-{today.strftime('%y')}"
 
     response = (
         supabase
