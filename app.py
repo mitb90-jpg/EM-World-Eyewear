@@ -458,11 +458,18 @@ with col2:
     st.markdown("<p style='font-size:25px; color:gray;'>Turning Transactions Into Insights</p>", unsafe_allow_html=True)
 
 
-# ---------------- APP MENU ----------------
+st.sidebar.image("Logo.jpeg", width=70)
+
+st.sidebar.markdown(
+    "<h2 style='color:white; margin-top:0px;'>Prime Accounting</h2>",
+    unsafe_allow_html=True
+)
 
 st.sidebar.markdown("---")
 
 
+# ---------------- APP MENU ----------------
+st.sidebar.markdown("---")
 page = st.sidebar.radio(
     "📋 Navigation",
     [
