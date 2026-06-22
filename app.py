@@ -668,6 +668,7 @@ nav_items = [
     "👥 Clients",
     "🧾 Sales",
     "📄 Invoice History",
+    "🗂️ Client Tracker",
     "📊 Reports"
 ]
 
