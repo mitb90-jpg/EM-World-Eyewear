@@ -44,7 +44,7 @@ VISA_DEBIT_RULES = {
 }
 VISA_CREDIT_RULES = {
     "SCOTIABANKPAYMENT|Payment": "Credit Card Payments",
-    "Credit Adjustment|Fee": "Other Income",
+    "CreditAdjustment|Fee": "Other Income",
     
 }
 
