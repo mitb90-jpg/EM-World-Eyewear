@@ -1820,7 +1820,7 @@ if page == "📊 Reports":
 
     with scotia_col1:
         uploaded_pdf = st.file_uploader(
-            "Upload Scotia Bank Statement PDF(s)",
+            "Upload Scotia Bank Statements PDF(s)",
             type=["pdf"],
             accept_multiple_files=True,
             key=f"scotia_pdf_uploader_{st.session_state.scotia_uploader_version}"
@@ -1839,7 +1839,7 @@ if page == "📊 Reports":
 
     with visa_col1:
         uploaded_visa_pdf = st.file_uploader(
-            "Upload Visa-6023 Statement PDF(s)",
+            "Upload Visa-6023 Statements PDF(s)",
             type=["pdf"],
             accept_multiple_files=True,
             key=f"visa_pdf_uploader_{st.session_state.visa_uploader_version}"
