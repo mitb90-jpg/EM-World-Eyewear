@@ -735,6 +735,183 @@ def apply_visa_categories(df):
 
     return df
 
+# ---------------- TRIANGLE MASTERCARD (7188) STATEMENT PARSER ----------------
+
+def parse_triangle_statement(pdf_file):
+    """
+    Parses a Triangle World Elite Mastercard (Canadian Tire Bank) statement PDF.
+    Returns a DataFrame with columns: Date, Description, Debit, Credit
+    Credit = Payments received + Returns and other credits
+    Debit  = Purchases
+    """
+
+    import pdfplumber
+
+    def norm(s):
+        return re.sub(r"\s+", "", s)
+
+    MONTHS = "JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC"
+
+    STOP_PHRASES = [
+        "CONTINUEDONNEXTPAGE",
+        "WAYSTOPAY",
+        "NEWADDRESS",
+        "DETAILSOFYOURCANADIANTIRESTOREPURCHASES",
+        "DETAILSOFYOURINTERESTCHARGES",
+        "OTHERDETAILSABOUTYOURACCOUNT",
+    ]
+
+    transactions = []
+    current = None
+    current_section = None  # "credit" or "debit"
+
+    with pdfplumber.open(pdf_file) as pdf:
+
+        for page in pdf.pages:
+
+            in_table = False
+
+            words = page.extract_words()
+
+            rows = {}
+
+            for w in words:
+                y = round(float(w["top"]), 1)
+                rows.setdefault(y, []).append(w)
+
+            for y in sorted(rows):
+
+                line_words = sorted(rows[y], key=lambda x: float(x["x0"]))
+
+                text = " ".join(w["text"] for w in line_words)
+                header_norm = norm(text).upper()
+
+                first_x = float(line_words[0]["x0"])
+
+                # ignore sidebar/legal text on the right side of the page
+                if first_x >= 380:
+                    continue
+
+                # universal stop phrases (footers, disclaimers, unrelated sub-tables)
+                if any(p in header_norm for p in STOP_PHRASES):
+                    in_table = False
+                    current_section = None
+                    if current:
+                        transactions.append(current)
+                        current = None
+                    continue
+
+                # sub-label line, doesn't change table state
+                if header_norm.startswith("PURCHASES-CARD"):
+                    continue
+
+                # section markers
+                if header_norm.startswith("PAYMENTSRECEIVED"):
+                    current_section = "credit"
+                    in_table = False
+                    continue
+
+                if header_norm.startswith("RETURNSANDOTHERCREDITS"):
+                    current_section = "credit"
+                    in_table = False
+                    continue
+
+                if header_norm in ("PURCHASES", "PURCHASES(CONTINUED)"):
+                    current_section = "debit"
+                    in_table = False
+                    continue
+
+                # table header row -> start capturing (only if we know which section we're in)
+                if "TRANSACTION" in header_norm and "POSTING" in header_norm:
+                    if current_section is not None:
+                        in_table = True
+                    continue
+
+                if header_norm.startswith("DATEDATE"):
+                    continue
+
+                if not in_table or current_section is None:
+                    continue
+
+                # stop at sub-table totals
+                if (
+                    header_norm.startswith("TOTALPAYMENTSRECEIVED")
+                    or header_norm.startswith("TOTALRETURNSANDCREDITS")
+                    or header_norm.startswith("TOTALPURCHASES")
+                ):
+                    in_table = False
+                    current_section = None
+                    if current:
+                        transactions.append(current)
+                        current = None
+                    continue
+
+                first_word = line_words[0]["text"]
+
+                is_date_start = bool(
+                    re.match(rf"^({MONTHS})$", first_word.upper())
+                ) and len(line_words) >= 4
+
+                if is_date_start:
+
+                    if current:
+                        transactions.append(current)
+
+                    trans_date = f"{line_words[0]['text']} {line_words[1]['text']}"
+                    post_date = f"{line_words[2]['text']} {line_words[3]['text']}"
+
+                    # last word on the line is always the amount;
+                    # everything else between dates and amount is the description
+                    remaining = line_words[4:]
+                    amount_word = remaining[-1]["text"] if remaining else ""
+                    desc_words = remaining[:-1]
+
+                    current = {
+                        "Date": trans_date,
+                        "Post Date": post_date,
+                        "Description": " ".join(w["text"] for w in desc_words),
+                        "Amount": amount_word,
+                        "Section": current_section
+                    }
+
+                else:
+
+                    # skip USD foreign-currency conversion lines
+                    if re.search(r"USD\s*@", text):
+                        continue
+
+                    # continuation of description (wrapped line)
+                    if current:
+                        current["Description"] += " " + text
+
+            if current:
+                transactions.append(current)
+                current = None
+
+    df = pd.DataFrame(transactions)
+
+    if df.empty:
+        return df
+
+    df["Description"] = df["Description"].str.strip()
+
+    df["Amount"] = (
+        df["Amount"]
+        .astype(str)
+        .str.replace("$", "", regex=False)
+        .str.replace(",", "", regex=False)
+    )
+
+    df["Amount"] = pd.to_numeric(df["Amount"], errors="coerce").fillna(0)
+
+    # Section already tells us credit vs debit directly (no sign-guessing needed)
+    df["Debit"] = df.apply(lambda r: abs(r["Amount"]) if r["Section"] == "debit" else 0, axis=1)
+    df["Credit"] = df.apply(lambda r: abs(r["Amount"]) if r["Section"] == "credit" else 0, axis=1)
+
+    df = df.drop(columns=["Amount", "Section"])
+
+    return df
+
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
     page_title="Smart Transaction Categorizer",
@@ -1867,6 +2044,28 @@ if page == "📊 Reports":
             st.session_state.visa_uploader_version += 1
             st.rerun()
 
+    # ---------------- TRIANGLE MASTERCARD UPLOADER ----------------
+
+    if "triangle_uploader_version" not in st.session_state:
+        st.session_state.triangle_uploader_version = 0
+
+    triangle_col1, triangle_col2 = st.columns([5, 1])
+
+    with triangle_col1:
+        uploaded_triangle_pdf = st.file_uploader(
+            "Upload Triangle Mastercard Statement PDF(s)",
+            type=["pdf"],
+            accept_multiple_files=True,
+            key=f"triangle_pdf_uploader_{st.session_state.triangle_uploader_version}"
+        )
+
+    with triangle_col2:
+        st.write("")
+        st.write("")
+        if st.button("🗑️ Clear All", key="clear_triangle_files"):
+            st.session_state.triangle_uploader_version += 1
+            st.rerun()
+
     df = None
 
     # ---------------- EXCEL ----------------
@@ -2025,12 +2224,30 @@ if page == "📊 Reports":
         else:
             st.warning("No transactions found in the Visa statement(s).")
 
+    elif uploaded_triangle_pdf:
+
+        st.success(f"{len(uploaded_triangle_pdf)} Triangle Mastercard statement(s) uploaded successfully")
+
+        triangle_dfs = []
+
+        for triangle_file in uploaded_triangle_pdf:
+            triangle_df = parse_triangle_statement(triangle_file)
+            if not triangle_df.empty:
+                triangle_dfs.append(triangle_df)
+
+        if triangle_dfs:
+            df = pd.concat(triangle_dfs, ignore_index=True)
+            df = apply_visa_categories(df)
+        else:
+            st.warning("No transactions found in the Triangle Mastercard statement(s).")
+
     # ---------------- CLEAN DATA ----------------
 
     any_upload = (
         uploaded_excel is not None
         or uploaded_pdf
         or uploaded_visa_pdf
+        or uploaded_triangle_pdf
     )
 
     if any_upload:
