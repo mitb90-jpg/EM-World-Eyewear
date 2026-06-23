@@ -1054,6 +1054,64 @@ section[data-testid="stSidebar"] div.stButton > button p {
     color: white !important;
     font-weight: bold;
 }
+
+/* ---------------- FANCY FILE UPLOADERS (different colors per card) ---------------- */
+
+div[data-testid="stFileUploader"] section {
+    border: none;
+    background-color: transparent;
+}
+
+div[data-testid="stFileUploader"] button {
+    border-radius: 10px !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    padding: 10px 20px !important;
+    border: none !important;
+    color: white !important;
+}
+
+/* Scotia - blue */
+.uploader-blue div[data-testid="stFileUploader"] {
+    border-radius: 14px;
+    padding: 14px;
+    background-color: #e8f1fb;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.uploader-blue div[data-testid="stFileUploader"] button {
+    background-color: #1f4e79 !important;
+}
+.uploader-blue div[data-testid="stFileUploader"] button:hover {
+    background-color: #163a5c !important;
+}
+
+/* Visa - amber */
+.uploader-amber div[data-testid="stFileUploader"] {
+    border-radius: 14px;
+    padding: 14px;
+    background-color: #fef3e0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.uploader-amber div[data-testid="stFileUploader"] button {
+    background-color: #b8762f !important;
+}
+.uploader-amber div[data-testid="stFileUploader"] button:hover {
+    background-color: #96601f !important;
+}
+
+/* Triangle Mastercard - teal */
+.uploader-teal div[data-testid="stFileUploader"] {
+    border-radius: 14px;
+    padding: 14px;
+    background-color: #e3f4f4;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+.uploader-teal div[data-testid="stFileUploader"] button {
+    background-color: #2f7d7d !important;
+}
+.uploader-teal div[data-testid="stFileUploader"] button:hover {
+    background-color: #235e5e !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -2082,12 +2140,14 @@ if page == "📊 Reports":
     scotia_col1, scotia_col2 = st.columns([5, 1])
 
     with scotia_col1:
+        st.markdown('<div class="uploader-blue">', unsafe_allow_html=True)
         uploaded_pdf = st.file_uploader(
-            "Upload Scotia Bank Statements PDF(s)",
+            "Upload Scotia Bank Statement PDF(s)",
             type=["pdf"],
             accept_multiple_files=True,
             key=f"scotia_pdf_uploader_{st.session_state.scotia_uploader_version}"
         )
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with scotia_col2:
         st.write("")
@@ -2101,12 +2161,14 @@ if page == "📊 Reports":
     visa_col1, visa_col2 = st.columns([5, 1])
 
     with visa_col1:
+        st.markdown('<div class="uploader-amber">', unsafe_allow_html=True)
         uploaded_visa_pdf = st.file_uploader(
-            "Upload Visa - 6023 & 7866 Statements PDF(s)",
+            "Upload Visa Statement PDF(s)",
             type=["pdf"],
             accept_multiple_files=True,
             key=f"visa_pdf_uploader_{st.session_state.visa_uploader_version}"
         )
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with visa_col2:
         st.write("")
@@ -2123,12 +2185,14 @@ if page == "📊 Reports":
     triangle_col1, triangle_col2 = st.columns([5, 1])
 
     with triangle_col1:
+        st.markdown('<div class="uploader-teal">', unsafe_allow_html=True)
         uploaded_triangle_pdf = st.file_uploader(
             "Upload Triangle Mastercard Statement PDF(s)",
             type=["pdf"],
             accept_multiple_files=True,
             key=f"triangle_pdf_uploader_{st.session_state.triangle_uploader_version}"
         )
+        st.markdown('</div>', unsafe_allow_html=True)
 
     with triangle_col2:
         st.write("")
