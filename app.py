@@ -852,16 +852,19 @@ def parse_triangle_statement(pdf_file):
 
             for y in sorted(rows):
 
-                line_words = sorted(rows[y], key=lambda x: float(x["x0"]))
+                line_words_all = sorted(rows[y], key=lambda x: float(x["x0"]))
+
+                # drop any individual word sitting in the sidebar zone (x >= 380),
+                # even if other words on the same line are in the transaction table.
+                # This handles cases where a transaction row and an unrelated
+                # sidebar paragraph happen to land on the same y-coordinate.
+                line_words = [w for w in line_words_all if float(w["x0"]) < 380]
+
+                if not line_words:
+                    continue
 
                 text = " ".join(w["text"] for w in line_words)
                 header_norm = norm(text).upper()
-
-                first_x = float(line_words[0]["x0"])
-
-                # ignore sidebar/legal text on the right side of the page
-                if first_x >= 380:
-                    continue
 
                 # universal stop phrases (footers, disclaimers, unrelated sub-tables)
                 if any(p in header_norm for p in STOP_PHRASES):
