@@ -3112,8 +3112,19 @@ elif page == "🏠 Dashboard":
 
 st.markdown(
     """
-    <div style='text-align: center; color: gray; font-size: 14px; margin-top: 30px;'>
-        Powered by: <b>Prime Accounting and Tax</b>
+    <hr style="margin-top:40px;margin-bottom:10px;">
+    
+    <div style="
+        text-align: right;
+        color: #6c757d;
+        font-size: 13px;
+        font-family: Arial, sans-serif;
+        padding-bottom: 10px;
+    ">
+        Powered by <span style="
+            color: #1f4e79;
+            font-weight: 600;
+        ">Prime Accounting & Tax</span>
     </div>
     """,
     unsafe_allow_html=True
