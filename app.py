@@ -2264,14 +2264,14 @@ if page == "📊 Reports":
                 key=f"triangle_pdf_uploader_{st.session_state.triangle_uploader_version}"
             )
 
-    with triangle_col2:
+        with triangle_col2:
         st.write("")
         st.write("")
         if st.button("🗑️ Clear All", key="clear_triangle_files"):
             st.session_state.triangle_uploader_version += 1
             st.rerun()
 
-        df = None
+    df = None
     scotia_df = None
     visa_df = None
     triangle_df = None
@@ -2284,9 +2284,19 @@ if page == "📊 Reports":
 
     # ---------------- SCOTIA PDF ----------------
 
-      
+    if uploaded_pdf:
 
-        if uploaded_pdf:
+        import pdfplumber
+
+        st.success(
+            f"{len(uploaded_pdf)} Scotia statement PDF(s) uploaded successfully"
+        )
+
+        transactions = []
+
+        for pdf_file in uploaded_pdf:
+
+            with pdfplumber.open(pdf_file) as pdf:
 
             import pdfplumber
 
