@@ -1782,6 +1782,32 @@ if page == "🧾 Sales":
 
         amount = item_df["Amount"].sum()
 
+        # -------- DELETE ITEM --------
+
+        delete_options = [
+            f"{i+1}. {item['Description']} (${item['Amount']:,.2f})"
+            for i, item in enumerate(st.session_state.invoice_items)
+        ]
+
+        delete_choice = st.selectbox(
+            "Select Item to Delete",
+            ["Select Item"] + delete_options,
+            key="delete_item_select"
+        )
+
+        if delete_choice != "Select Item":
+
+            if st.button("🗑️ Delete Item", key="delete_item_button"):
+
+                delete_index = int(delete_choice.split(".")[0]) - 1
+
+                st.session_state.invoice_items.pop(delete_index)
+
+                if "delete_item_select" in st.session_state:
+                    del st.session_state["delete_item_select"]
+
+                st.rerun()
+
 
     else:
 
