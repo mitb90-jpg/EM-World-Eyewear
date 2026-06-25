@@ -1938,11 +1938,12 @@ if page == "🧾 Sales":
 
 
     if unpaid_invoices:
-
         unpaid_df = pd.DataFrame(
             unpaid_invoices
         )
 
+        total_unpaid = unpaid_df["total"].sum()
+        st.metric("Total Unpaid", f"${total_unpaid:,.2f}")
 
         st.dataframe(
             unpaid_df[
