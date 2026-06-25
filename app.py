@@ -1568,6 +1568,11 @@ if page == "👥 Clients":
 
 if page == "🧾 Sales":
 
+    if "sales_form_version" not in st.session_state:
+        st.session_state.sales_form_version = 0
+
+    v = st.session_state.sales_form_version
+
     col_title, col_refresh = st.columns([4, 1])
 
     with col_title:
@@ -1578,21 +1583,7 @@ if page == "🧾 Sales":
 
             st.session_state.invoice_items = []
             st.session_state.current_invoice_number = generate_invoice_number()
-
-            for k in [
-                "sales_customer_label",
-                "sales_invoice_date",
-                "sales_due_date",
-                "item_description",
-                "invoice_quantity",
-                "invoice_rate",
-                "invoice_discount",
-                "sales_hst_rate",
-                "sales_tax",
-                "sales_payment_status",
-            ]:
-                if k in st.session_state:
-                    del st.session_state[k]
+            st.session_state.sales_form_version += 1
 
             st.rerun()
 
@@ -1617,7 +1608,7 @@ if page == "🧾 Sales":
         customer_label = st.selectbox(
             "Customer",
             ["Select Client"] + sales_client_labels,
-            key="sales_customer_label"
+            key=f"sales_customer_label_{v}"
         )
 
         customer_name = (
@@ -1631,7 +1622,7 @@ if page == "🧾 Sales":
         invoice_date = st.date_input(
             "Invoice Date",
             format="DD-MM-YYYY",
-            key="sales_invoice_date"
+            key=f"sales_invoice_date_{v}"
         )
 
     col3, col4 = st.columns(2)
@@ -1654,7 +1645,7 @@ if page == "🧾 Sales":
         due_date = st.date_input(
             "Due Date",
             format="DD-MM-YYYY",
-            key="sales_due_date"
+            key=f"sales_due_date_{v}"
         )
 
     st.divider()
@@ -1672,7 +1663,7 @@ if page == "🧾 Sales":
 
         item_description = st.text_input(
             "Description",
-            key="item_description"
+            key=f"item_description_{v}"
         )
 
     with col2:
@@ -1681,7 +1672,7 @@ if page == "🧾 Sales":
             "Quantity",
             min_value=1,
             value=1,
-            key="invoice_quantity"
+            key=f"invoice_quantity_{v}"
         )
 
     with col3:
@@ -1689,7 +1680,7 @@ if page == "🧾 Sales":
         rate = st.number_input(
             "Rate",
             min_value=0.0,
-            key="invoice_rate"
+            key=f"invoice_rate_{v}"
         )
 
     with col4:
@@ -1698,7 +1689,7 @@ if page == "🧾 Sales":
             "Discount",
             min_value=0.0,
             value=0.0,
-            key="invoice_discount"
+            key=f"invoice_discount_{v}"
         )
 
     item_total = (quantity * rate) - discount
@@ -1828,7 +1819,7 @@ if page == "🧾 Sales":
         min_value=0.0,
         value=13.0,
         step=0.5,
-        key="sales_hst_rate"
+        key=f"sales_hst_rate_{v}"
     )
 
 
@@ -1840,7 +1831,7 @@ if page == "🧾 Sales":
         min_value=0.0,
         value=float(calculated_hst),
         step=0.01,
-        key="sales_tax"
+        key=f"sales_tax_{v}"
     )
 
 
@@ -1875,7 +1866,7 @@ if page == "🧾 Sales":
             "Unpaid",
             "Paid"
         ],
-        key="sales_payment_status"
+        key=f"sales_payment_status_{v}"
     )
 
 
@@ -1937,21 +1928,7 @@ if page == "🧾 Sales":
         # ---- reset everything for next invoice ----
         st.session_state.invoice_items = []
         st.session_state.current_invoice_number = generate_invoice_number()
-
-        for k in [
-            "sales_customer_label",
-            "sales_invoice_date",
-            "sales_due_date",
-            "item_description",
-            "invoice_quantity",
-            "invoice_rate",
-            "invoice_discount",
-            "sales_hst_rate",
-            "sales_tax",
-            "sales_payment_status",
-        ]:
-            if k in st.session_state:
-                del st.session_state[k]
+        st.session_state.sales_form_version += 1
 
         st.rerun()
 
