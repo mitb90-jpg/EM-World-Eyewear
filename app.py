@@ -1865,6 +1865,37 @@ if page == "🧾 Sales":
         )
         total = amount + tax
 
+        # -------- SAVE DATABASE --------
+        total_quantity = sum(
+            item["Quantity"]
+            for item in st.session_state.invoice_items
+        )
+        item_descriptions = ", ".join(
+            item["Description"]
+            for item in st.session_state.invoice_items
+        )
+        add_invoice(
+            invoice_number,
+            customer_name,
+            invoice_date,
+            due_date,
+            item_descriptions,
+            total_quantity,
+            0,
+            amount,
+            tax,
+            total,
+            payment_status,
+            received_date
+        )
+        add_invoice_items(
+            invoice_number,
+            st.session_state.invoice_items
+        )
+        st.success(
+            "Invoice saved successfully ✅"
+        )
+
         # ---- reset everything for next invoice ----
         st.session_state.invoice_items = []
         st.session_state.current_invoice_number = generate_invoice_number()
@@ -1883,63 +1914,6 @@ if page == "🧾 Sales":
         ]:
             if k in st.session_state:
                 del st.session_state[k]
-
-        st.rerun()
-
-        # -------- SAVE DATABASE --------
-
-        total_quantity = sum(
-            item["Quantity"]
-            for item in st.session_state.invoice_items
-        )
-
-        item_descriptions = ", ".join(
-            item["Description"]
-            for item in st.session_state.invoice_items
-        )
-
-        add_invoice(
-            invoice_number,
-            customer_name,
-            invoice_date,
-            due_date,
-            item_descriptions,
-            total_quantity,
-            0,
-            amount,
-            tax,
-            total,
-            payment_status,
-            received_date
-        )
-
-        add_invoice_items(
-            invoice_number,
-            st.session_state.invoice_items
-        )
-
-
-        st.success(
-            "Invoice saved successfully ✅"
-        )
-
-
-        # CLEAR ALL INVOICE INPUTS
-
-        st.session_state.invoice_items = []
-
-
-        for key in [
-            "item_description",
-            "invoice_quantity",
-            "invoice_rate",
-            "current_invoice_number"
-        ]:
-
-            if key in st.session_state:
-
-                del st.session_state[key]
-
 
         st.rerun()
 
