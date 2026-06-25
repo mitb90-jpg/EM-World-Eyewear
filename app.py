@@ -1568,7 +1568,34 @@ if page == "👥 Clients":
 
 if page == "🧾 Sales":
 
-    st.title("🧾 Sales & Invoice Management")
+    col_title, col_refresh = st.columns([4, 1])
+
+    with col_title:
+        st.title("🧾 Sales & Invoice Management")
+
+    with col_refresh:
+        if st.button("🔄 Refresh Page", key="manual_refresh_button"):
+
+            st.session_state.invoice_items = []
+            st.session_state.current_invoice_number = generate_invoice_number()
+
+            for k in [
+                "sales_customer_label",
+                "sales_invoice_date",
+                "sales_due_date",
+                "item_description",
+                "invoice_quantity",
+                "invoice_rate",
+                "invoice_discount",
+                "sales_hst_rate",
+                "sales_tax",
+                "sales_payment_status",
+            ]:
+                if k in st.session_state:
+                    del st.session_state[k]
+
+            st.rerun()
+
     st.subheader("Create Invoice")
 
     # ---------- INVOICE BASIC DETAILS ----------
