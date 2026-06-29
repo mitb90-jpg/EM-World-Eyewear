@@ -2070,6 +2070,8 @@ if page == "🧾 Sales":
             ]
         ].sort_values("days_overdue", ascending=False)
 
+        aging_display_df["due_date"] = aging_display_df["due_date"].dt.strftime("%Y-%m-%d")
+
         st.dataframe(
             aging_display_df,
             use_container_width=True,
