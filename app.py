@@ -2006,6 +2006,76 @@ if page == "🧾 Sales":
         st.info(
             "No unpaid invoices"
         )
+        # -------- AGING ANALYSIS --------
+
+    st.divider()
+
+    st.subheader("📅 Aging Analysis")
+
+    if unpaid_invoices:
+
+        aging_df = pd.DataFrame(unpaid_invoices)
+
+        aging_df["due_date"] = pd.to_datetime(aging_df["due_date"], errors="coerce")
+
+        today = pd.Timestamp.now().normalize()
+
+        aging_df["days_overdue"] = (today - aging_df["due_date"]).dt.days
+
+        def bucket_label(days):
+            if days <= 10:
+                return "0-10 Days"
+            elif days <= 30:
+                return "10-30 Days"
+            elif days <= 90:
+                return "30-90 Days"
+            else:
+                return "90+ Days"
+
+        aging_df["Bucket"] = aging_df["days_overdue"].apply(bucket_label)
+
+        bucket_order = ["0-10 Days", "10-30 Days", "30-90 Days", "90+ Days"]
+
+        bucket_summary = (
+            aging_df.groupby("Bucket")["total"]
+            .sum()
+            .reindex(bucket_order, fill_value=0)
+        )
+
+        col_a, col_b, col_c, col_d = st.columns(4)
+
+        with col_a:
+            st.metric("0-10 Days", f"${bucket_summary['0-10 Days']:,.2f}")
+
+        with col_b:
+            st.metric("10-30 Days", f"${bucket_summary['10-30 Days']:,.2f}")
+
+        with col_c:
+            st.metric("30-90 Days", f"${bucket_summary['30-90 Days']:,.2f}")
+
+        with col_d:
+            st.metric("90+ Days", f"${bucket_summary['90+ Days']:,.2f}")
+
+        st.dataframe(
+            aging_df[
+                [
+                    "invoice_number",
+                    "client_name",
+                    "due_date",
+                    "days_overdue",
+                    "Bucket",
+                    "total"
+                ]
+            ].sort_values("days_overdue", ascending=False),
+            use_container_width=True,
+            hide_index=True
+        )
+
+    else:
+
+        st.info(
+            "No unpaid invoices to analyze"
+        )
 
 
 
