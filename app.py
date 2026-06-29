@@ -2082,17 +2082,39 @@ if page == "🧾 Sales":
             use_container_width=True,
             hide_index=True
         )
+        st.dataframe(
+            aging_display_df,
+            use_container_width=True,
+            hide_index=True
+        )
+
+        aging_grand_total = aging_display_df["total"].sum()
+
+        st.markdown(f"**Total Overdue Amount: ${aging_grand_total:,.2f}**")
 
         # -------- DOWNLOAD AGING SUMMARY --------
 
         aging_excel_df = aging_display_df.rename(columns={
             "invoice_number": "Invoice Number",
             "client_name": "Client Name",
+            "invoice_date": "Invoice Date",
             "due_date": "Due Date",
             "days_overdue": "Days Overdue",
             "Bucket": "Aging Bucket",
             "total": "Total"
         })
+
+        total_row = pd.DataFrame([{
+            "Invoice Number": "",
+            "Client Name": "",
+            "Invoice Date": "",
+            "Due Date": "",
+            "Days Overdue": "",
+            "Aging Bucket": "TOTAL",
+            "Total": aging_grand_total
+        }])
+
+        aging_excel_df = pd.concat([aging_excel_df, total_row], ignore_index=True)
 
         excel_buffer = io.BytesIO()
 
